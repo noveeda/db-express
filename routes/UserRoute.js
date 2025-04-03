@@ -7,8 +7,9 @@ const UserController = require("../controllers/UserController");
 router.get("/signin", UserController.viewSignIn);
 router.get("/signup", UserController.viewSignUp);
 
+router.post("/check-username", UserController.isExistUsername);
 router.post("/signup", UserController.createUser);
-router.post("/signin", UserController.validUser);
+router.post("/signin", UserController.signIn);
 
 router.delete("/:username", UserController.deleteUser);
 

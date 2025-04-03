@@ -1,24 +1,83 @@
 extend layout 
 
-block content 
-  form(action="/process/signup", method="post")
-  div 
-    label ID 
+block content
+  .box
+    .container
+      .login-box
+        .title 회원가입
+        form(action="/user/signup", method="post") 
+          .input-box
+            input.input-field-id(type="text" id="username" placeholder="아이디를 입력해주세요." name="username") 
+            button.check-id-btn(type="button" id="check-id") 중복확인
+          .input-box
+            input.input-field(type="password" id="password" placeholder="비밀번호를 입력해주세요." name="password")
+          .input-box
+            input.input-field(type="text" id="nickname" placeholder="이름을 입력해주세요." name="nickname")
+          .button-box
+            button.login-btn.btn-disable(id="sign-up-button") 회원가입
+        .go_back
+          a.go_list(href="signin") 로그인
+          //- a.go_list(href="list.pug") 목록으로
+  script.
+    $(document).ready(function() {
+      let isUsernameAvailable = false; // 아이디 중복 여부
 
-    form(action="/process/signup/id", method="post") 
-      input#id(type="text", name="username") 
-      input(type="button", value="중복 확인")
-  if error
-    p(style="color: red;") #{error}
-  if success
-    p(style="color: green;") #{success}
-  div 
-    label Password 
+      function validateForm() {
+        const username = $("#username").val().trim();
+        const password = $("#password").val().trim();
+        const nickname = $("#nickname").val().trim();
+        
+        // 아이디, 비밀번호, 이름이 비어있지 않고, 아이디가 사용 가능할 때만 버튼 활성화
+        if (username && password && nickname && isUsernameAvailable) {
+          $("#sign-up-button").prop("disabled", false);
+          $("#sign-up-button").removeClass("btn-disable");
+        } else {
+          $("#sign-up-button").prop("disabled", true);
+          $("#sign-up-button").addClass("btn-disable");
+        }
+      }
 
-    
-    input#password(type="password", name="password")
-  div 
-    label 이름 
-    input#nickname(type="text", name="nickname")
-  div 
-    input(type="submit", value="회원가입")
+      $("#username").on("input", function() {
+        isUsernameAvailable = false; // 입력이 바뀌면 다시 확인해야 함
+        validateForm();
+      });
+
+      // 비번 지우고 회원가입 하는거 방지
+      $("#password").on("input", function() {
+        validateForm();
+      });
+
+      // 이름 지우고 회원가입 하는거 방지
+      $("#nickname").on("input", function() {
+        validateForm();
+      });
+
+      // 아이디 중복 확인
+      $("#check-id").click(function() {
+        const username = $("#username").val().trim();
+        if (!username) {
+          alert("아이디를 입력하세요.");
+          return;
+        }
+
+        $.ajax({
+          url: "/user/check-username",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify({ username: username, password : password }), // 데이터 보내야함
+          success: function(res) {
+            if (res.available) {
+              isUsernameAvailable = true;
+              alert("사용 가능한 아이디입니다.")
+            } else {
+              isUsernameAvailable = false;
+              alert("이미 사용중인 아이디입니다.")
+            }
+            validateForm();
+          },
+          error: function() {
+            alert("오류가 발생했습니다.");
+          }
+        });
+      });
+    });

@@ -39,7 +39,7 @@ app.listen(port, function () {
 });
 
 app.get("/", (req, res) => {
-  res.json({ mesage: "HI" });
+  res.json({ mesage: "Hello World" });
 });
 
 // app.get("/", (req, res) => {

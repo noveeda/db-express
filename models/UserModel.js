@@ -14,13 +14,13 @@ async function getAllUsers() {
   }
 }
 
-async function getUserByUsername(userName) {
+async function isExistUsername(userName) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const sql = "SELECT * FROM users WHERE id = ?";
+    const sql = "SELECT * FROM users WHERE user_username = ?";
     const rows = await conn.query(sql, [userName]);
-    return rows.length ? rows[0] : null;
+    return rows.length ? true : false;
   } catch (error) {
     throw error;
   } finally {
@@ -35,7 +35,7 @@ async function createUser(username, password, nickname) {
 
     // ✅ 중복 확인
     const existingUser = await conn.query(
-      "SELECT * FROM users WHERE username = ?",
+      "SELECT * FROM users WHERE user_username = ?",
       [username]
     );
 
@@ -47,7 +47,7 @@ async function createUser(username, password, nickname) {
     const sql =
       "INSERT INTO users (user_username, user_password, user_nickname) VALUES (?, ?, ?)";
     const result = await conn.query(sql, [username, password, nickname]);
-    return { user_id: result.insertId, username, nickname };
+    return { user_id: parseInt(result.insertId), username, nickname };
   } catch (error) {
     throw error;
   } finally {
@@ -77,8 +77,8 @@ async function validUser(username, password) {
       "SELECT COUNT(*) FROM users WHERE user_username = ? AND user_password = ?;";
     const result = await conn.query(sql, [username, password]);
 
-    // 로그인 실패
-    if (result.length === 0) {
+    // [ {COUNT(*) : 0n} ] 식으로 옴
+    if (result[0]["COUNT(*)"] == 0) {
       return false;
     }
 
@@ -91,7 +91,7 @@ async function validUser(username, password) {
 
 module.exports = {
   getAllUsers,
-  getUserByUsername,
+  isExistUsername,
   createUser,
   deleteUser,
   validUser,
