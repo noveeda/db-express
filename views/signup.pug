@@ -1,0 +1,24 @@
+extend layout 
+
+block content 
+  form(action="/process/signup", method="post")
+  div 
+    label ID 
+
+    form(action="/process/signup/id", method="post") 
+      input#id(type="text", name="username") 
+      input(type="button", value="중복 확인")
+  if error
+    p(style="color: red;") #{error}
+  if success
+    p(style="color: green;") #{success}
+  div 
+    label Password 
+
+    
+    input#password(type="password", name="password")
+  div 
+    label 이름 
+    input#nickname(type="text", name="nickname")
+  div 
+    input(type="submit", value="회원가입")
