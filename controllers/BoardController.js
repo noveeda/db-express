@@ -15,7 +15,20 @@ async function getPosts(req, res) {
   }
 }
 
-async function getPostByID(res, req) {}
+async function getPostByID(req, res) {
+  try {
+    const id = parseInt(req.params.id);
+
+    let result = await BoardModel.getPostByID(id);
+
+    // res.json(result);
+    return res.render("post", result);
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getPostByNickname(res, req) {}
 
 module.exports = {
   getPosts,

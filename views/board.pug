@@ -18,7 +18,8 @@ block content
       each val in data
         .row
           .cell #{val.post_id}
-          .cell #{val.post_title}
+          .cell 
+            a(href=`post/${val.post_id}`) #{val.post_title}
           .cell #{val.user_nickname}
           .cell #{val.post_date}
           .cell #{val.post_views}
@@ -33,9 +34,9 @@ block content
     // 페이징
     .pagination
       a.page(href="#") ◄
-      a.page(href="#") 1
-      a.page(href="#") 2
-      a.page(href="#") 3
+      a.page(href="?startPage=1") 1
+      a.page(href="?startPage=2") 2
+      a.page(href="?startPage=3") 3
       a.page(href="#") ►
 
     // 글쓰기 버튼
