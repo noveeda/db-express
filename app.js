@@ -30,7 +30,7 @@ app.use(
   })
 );
 
-// app.use("/board", boardRouter);
+app.use("/board", boardRouter);
 app.use("/user", userRouter);
 
 // 포트 3000에서 실행

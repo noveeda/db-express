@@ -1,11 +1,15 @@
+const { json } = require("express");
 const BoardModel = require("../models/BoardModel");
 
-async function getPosts(res, req) {
+async function getPosts(req, res) {
   try {
-    const result = await BoardModel.getPosts();
-    const posts = { length: result["limit"], data: result["data"] };
+    const startPage = parseInt(req.query.startPage) || 1;
+    const count = parseInt(req.query.count) || 10;
 
-    res.render("board", posts);
+    let result = await BoardModel.getPosts(startPage, count);
+    result = JSON.parse(result);
+    // res.json(result);
+    return res.render("board", result);
   } catch (error) {
     throw error;
   }

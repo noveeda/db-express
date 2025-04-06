@@ -1,0 +1,43 @@
+extend board_layout 
+
+block content
+  .container
+    h1 자유 게시판
+
+    // 게시글 리스트
+    .table
+      // 헤더
+      .row.header
+        .cell 번호
+        .cell 제목
+        .cell 작성자
+        .cell 작성일
+        .cell 조회수
+      
+      // 목록
+      each val in data
+        .row
+          .cell #{val.post_id}
+          .cell #{val.post_title}
+          .cell #{val.user_nickname}
+          .cell #{val.post_date}
+          .cell #{val.post_views}
+        
+    // 검색창
+    .search-box
+      select
+        option 제목
+        option 작성자
+      input(type="text" placeholder="검색어를 입력하세요.")
+      button 🔍
+    // 페이징
+    .pagination
+      a.page(href="#") ◄
+      a.page(href="#") 1
+      a.page(href="#") 2
+      a.page(href="#") 3
+      a.page(href="#") ►
+
+    // 글쓰기 버튼
+    .write-btn
+      button 글쓰기

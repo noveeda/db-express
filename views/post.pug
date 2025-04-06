@@ -1,0 +1,52 @@
+doctype html
+html(lang="ko")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    title 자유 게시판
+    link(rel="stylesheet" href="board.css")
+  body
+    .container
+      h1 자유 게시판
+      
+      // 게시글 정보
+      .post-info
+        .row
+          .label 제목
+          .content 안녕하세요
+          .button-container
+            button.edit-btn(onclick="") 수정하기
+        .row
+          .label 작성자
+          .content 전예빈
+          .label 작성일
+          .content 2025-04-01
+          .label 조회수
+          .content 1
+      
+      // 게시글 내용
+      .post-content
+        p 게시글 내용입니다.
+        br
+        br
+        br
+      
+      // 댓글
+      .comment-section
+        .comment-title 댓글
+        .comments
+          .comment
+            .comment-writer 예빈이
+            .comment-text 마라탕
+            button.com-delete-btn(onclick="") 삭제
+      
+        // 댓글 입력
+        .comment-input
+          input.comment-name(type="text" placeholder="닉네임")
+          input.comment-content(type="text" placeholder="댓글을 입력해주세요.(100자)")
+          button.submit-btn(onclick="") 완료
+      
+      // 하단 버튼
+      .bottom-buttons
+        button.list-btn(onclick="location.href='list.pug'") 목록
+        button.board-delete-btn(onclick="") 삭제

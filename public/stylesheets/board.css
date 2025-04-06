@@ -1,0 +1,62 @@
+body 
+{ 
+    padding: 20px; 
+}
+.container 
+{ 
+    width: 80%; 
+    margin: auto;
+}
+.search-box 
+{ 
+    display: flex; 
+    justify-content: center; 
+    gap: 5px; 
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+}
+.table 
+{ 
+    width: 100%; 
+    margin-top: 10px; 
+    border-top: black solid 1px;
+}
+.row 
+{ 
+    display: flex; 
+    border-bottom: 1px solid #ddd; 
+}
+.row.header 
+{ 
+    background-color: #f4f4f4; 
+    font-weight: bold; 
+}
+.cell 
+{ 
+    flex: 1; 
+    padding: 10px; 
+    text-align: left; 
+}
+.pagination 
+{ 
+    display: flex; 
+    justify-content: center; 
+    margin-top: 10px; 
+}
+.page 
+{ 
+    padding: 5px 10px; 
+    margin: 2px; 
+    text-decoration: none; 
+    color: black; 
+}
+.page:hover 
+{ 
+    background-color: #f4f4f4; 
+}
+.write-btn 
+{ 
+    background-color: white;
+    text-align: right; 
+    margin-top: 10px; 
+}

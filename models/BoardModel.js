@@ -1,29 +1,36 @@
 const pool = require("../config/db");
 
-async function getPosts() {
+async function getPosts(_startPage, _count) {
   let conn;
-
+  const startPage = _startPage || 1;
+  const count = _count || 100;
   try {
-    // 페이지 번호 옵션
-    const page = parseInt(req.query.startPage) || 1;
-    // 페이지 당 데이터 개수 옵션
-    const limit = parseInt(req.query.listCel) || 10;
     // 페이지 번호 증가에 따라 바뀌는 offset 옵션
-    const offset = (page - 1) * limit;
+    const offset = (startPage - 1) * count;
 
     // db pool을 통해 커넥션 가져오기
     conn = await pool.getConnection();
 
-    const sql = "SELECT * FROM dummy_posts LIMIT ? OFFSET ?";
+    const sql = `
+    SELECT 
+    P.post_id, 
+    P.post_title, 
+    U.user_nickname, 
+    DATE_FORMAT(P.post_date, '%Y-%m-%d') as post_date, 
+    P.post_views
+    FROM posts as P 
+    JOIN users as U 
+    ON P.user_id = U.user_id 
+    ORDER BY post_id desc LIMIT ? OFFSET ?`;
     /**
-     * 테이블 dummy_posts 에서
-     * OFFSET 위치에서
+     * 테이블 posts 에서
+     * OFFSET 에서부터
      * LIMIT개 만큼
      * 모든(*) 컬럼을
      * 조회(select)하겠다.
      */
-    const rows = await conn.query(sql, [limit, offset]);
-    res.json({ page, limit, data: rows });
+    const rows = await conn.query(sql, [count, offset]);
+    return JSON.stringify({ startPage, count, data: rows });
   } catch (err) {
     throw err;
   }
