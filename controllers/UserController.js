@@ -36,8 +36,8 @@ async function createUser(req, res) {
   try {
     const { username, password, nickname } = req.body;
     const newUser = await UserModel.createUser(username, password, nickname);
-    res.redirect("/signin");
-    res.status(201).json(newUser);
+    res.redirect("/user/signin");
+    // res.status(201).json(newUser);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -57,7 +57,7 @@ async function deleteUser(req, res) {
 function viewSignIn(req, res) {
   // 로그인 상태면 board로
   if (req.session.user) {
-    return res.redirect("/board");
+    return res.redirect("/board/posts");
   }
 
   // 아니라면 로그인 페이지로
@@ -95,8 +95,8 @@ async function signIn(req, res) {
       username: username,
       password: password,
     };
-    res.redirect("/board");
-    res.status(200).json({ message: "로그인 성공" });
+    res.redirect("/board/posts");
+    // res.status(200).json({ message: "로그인 성공" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

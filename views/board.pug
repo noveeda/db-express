@@ -15,14 +15,14 @@ block content
         .cell 조회수
       
       // 목록
-      each val in data
+      each post in posts
         .row
-          .cell #{val.post_id}
+          .cell #{post.post_id}
           .cell 
-            a(href=`post/${val.post_id}`) #{val.post_title}
-          .cell #{val.user_nickname}
-          .cell #{val.post_date}
-          .cell #{val.post_views}
+            a(href=`post/${post.post_id}`) #{post.post_title}
+          .cell #{post.user_nickname}
+          .cell #{post.post_date}
+          .cell #{post.post_views}
         
     // 검색창
     .search-box
@@ -33,11 +33,26 @@ block content
       button 🔍
     // 페이징
     .pagination
-      a.page(href="#") ◄
-      a.page(href="?startPage=1") 1
-      a.page(href="?startPage=2") 2
-      a.page(href="?startPage=3") 3
-      a.page(href="#") ►
+      - var curPage = parseInt(startPage)
+      - var pageGroup = Math.floor((curPage - 1) / 10)
+      - var groupStart = pageGroup * 10 + 1
+      - var groupEnd = Math.min(groupStart + 9, totalPages)
+
+      // ◄ 이전 페이지 그룹
+      if groupStart > 1
+        a.page(href=`?startPage=${groupStart - 1}&count=10`) ◄
+
+      // 페이지 번호들
+      each num in Array(groupEnd - groupStart + 1).fill(0).map((_, idx) => groupStart + idx)
+        a.page(
+          href=`?startPage=${num}&count=10`,
+          class=(num === curPage ? 'active' : '')
+        ) #{num}
+
+      // ► 다음 페이지 그룹
+      if groupEnd < totalPages
+        a.page(href=`?startPage=${groupEnd + 1}&count=10`) ►
+
 
     // 글쓰기 버튼
     .write-btn
