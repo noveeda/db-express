@@ -2,7 +2,7 @@
 
 3학년 1학기 DB과목 프로젝트
 
-### :white_check_mark:[ADD]
+### :white_check_mark:[추가]
 
 - [x] 회원가입 구현
 - [x] 로그인 구현
