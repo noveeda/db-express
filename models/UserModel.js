@@ -73,17 +73,21 @@ async function deleteUser(id) {
 async function validUser(username, password) {
   let conn = await pool.getConnection();
   try {
-    const sql =
-      "SELECT COUNT(*) FROM users WHERE user_username = ? AND user_password = ?;";
+    const sql = `SELECT 
+      user_id id, 
+      user_username username,
+      user_nickname nickname 
+      FROM users 
+      WHERE user_username = ? AND user_password = ?;`;
     const result = await conn.query(sql, [username, password]);
 
-    // [ {COUNT(*) : 0n} ] 식으로 옴
-    if (result[0]["COUNT(*)"] == 0) {
+    // 없으면 false
+    if (result.length == 0) {
       return false;
     }
 
-    // 로그인 성공
-    return true;
+    // 있으면 해당 유저데이터 반환
+    return result[0];
   } catch (err) {
     throw err;
   }

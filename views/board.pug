@@ -2,7 +2,8 @@ extend board_layout
 
 block content
   .container
-    h1 자유 게시판
+    a(href="/board/posts") 
+      h1 자유 게시판
 
     // 게시글 리스트
     .table
@@ -56,4 +57,5 @@ block content
 
     // 글쓰기 버튼
     .write-btn
-      button 글쓰기
+      a(href="/board/post") 
+        button 글쓰기 

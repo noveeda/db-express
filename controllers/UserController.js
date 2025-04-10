@@ -81,20 +81,25 @@ async function signIn(req, res) {
     }
 
     // 로그인 시도
-    const isValid = await UserModel.validUser(username, password);
-    if (!isValid) {
+    const user = await UserModel.validUser(username, password);
+    if (!user) {
       req.session.error = "아이디 혹은 비밀번호가 일치하지 않습니다.";
 
-      return res
-        .status(401)
-        .json({ message: "아이디 혹은 비밀번호가 일치하지 않습니다." });
+      return res.render("signin", {
+        error: "아이디 혹은 비밀번호가 일치하지 않습니다.",
+      });
     }
+
+    // console.log(user);
 
     // 세션 할당
     req.session.user = {
-      username: username,
-      password: password,
+      id: user.id,
+      username: user.username,
+      nickname: user.nickname,
     };
+
+    console.table(req.session.user);
     res.redirect("/board/posts");
     // res.status(200).json({ message: "로그인 성공" });
   } catch (err) {

@@ -1,5 +1,6 @@
 const pool = require("../config/db");
 
+// 페이지네이션 한 포스트 가져오기
 async function getPosts(_startPage, _count) {
   let conn;
   const startPage = _startPage || 1;
@@ -43,6 +44,7 @@ async function getPosts(_startPage, _count) {
   }
 }
 
+// Post 전체 개수
 async function getPostsCount() {
   let conn;
   try {
@@ -54,61 +56,6 @@ async function getPostsCount() {
     throw error;
   } finally {
     if (conn) conn.release();
-  }
-}
-
-async function getPostByID(id) {
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const increaseViewCnt = await conn.query(
-      `
-      UPDATE posts
-	    SET post_views = post_views + 1
-      WHERE post_id = ?;`,
-      [id]
-    );
-
-    const post = await conn.query(
-      `
-      SELECT 
-      P.post_id, 
-      P.post_title, 
-      U.user_nickname, 
-      DATE_FORMAT(P.post_date, '%Y-%m-%d') as post_date, 
-      P.post_views,
-      P.post_content
-      FROM posts as P 
-      JOIN users as U 
-      ON P.user_id = U.user_id 
-      WHERE P.post_id = ?;
-      `,
-      [id]
-    );
-
-    const comments = await conn.query(
-      `      
-      SELECT
-      C.COMMENT_ID, 
-      U.USER_ID,
-      U.USER_NICKNAME,
-      DATE_FORMAT(C.comment_date, '%Y-%m-%d') as comment_date,
-      C.comment_content
-      FROM comments C
-      JOIN USERS U 
-      ON c.USER_ID = U.user_id
-      WHERE post_id = ?;`,
-      [id]
-    );
-    const result = {
-      post: post[0],
-      comments: comments,
-    };
-    return result;
-  } catch (error) {
-    throw error;
-  } finally {
-    if (conn) (await conn).release();
   }
 }
 
@@ -179,6 +126,27 @@ async function fetchCommentsByPostID(id) {
     if (conn) conn.release();
   }
 }
+
+async function createPost(userId, title, content) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    const sql = `
+      INSERT INTO posts (user_id, post_title, post_content, post_date, post_views)
+      VALUES (?, ?, ?, CURDATE(), 0)
+    `;
+
+    const result = await conn.query(sql, [userId, title, content]);
+
+    return Number(result.insertId);
+  } catch (err) {
+    throw err;
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
 module.exports = {
   getPosts,
   // getPostByID, 기존 코드 개선
@@ -186,4 +154,5 @@ module.exports = {
   increasePostViews,
   fetchCommentsByPostID,
   getPostsCount,
+  createPost,
 };

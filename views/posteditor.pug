@@ -1,0 +1,38 @@
+doctype html
+html(lang="ko")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    title 게시글 추가
+    link(rel="stylesheet", href="/stylesheets/writepost.css")
+  body
+    .container
+      h1 자유 게시판
+
+      if error
+        script.
+          alert("#{error}")
+
+      form(action="/board/post", method="post") 
+        // 게시글 정보
+        .post-info
+          .row
+            .label 제목
+            .content
+              input.input-title(
+                type="text", 
+                name="title",
+                placeholder="제목을 입력해주세요.",
+                required)
+
+        // 게시글 내용
+        .post-content
+          textarea.input-content(
+            name="content",
+            placeholder="게시글 내용을 입력해주세요.",
+            required)
+
+        // 하단 버튼
+        .bottom-buttons
+          button.insert-ok-btn(type="submit") 완료
+          //- button.cancel-btn(onclick="") 취소

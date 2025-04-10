@@ -2,7 +2,8 @@ extend post_layout
 
 block content
   .container
-    h1 자유 게시판
+    a(href="/board/posts") 
+      h1 자유 게시판
     
     // 게시글 정보
     .post-info
@@ -40,8 +41,9 @@ block content
       // 댓글 입력
       .comment-input
         //- input.comment-name(type="text" placeholder="닉네임")
-        input.comment-content(type="text" placeholder="댓글을 입력해주세요.(100자)")
-        button.submit-btn(onclick="") 완료
+        form(action="/comment/:id", method="post") 
+          input.comment-content(type="text" placeholder="댓글을 입력해주세요.(100자)")
+          button.submit-btn(onclick="") 완료
     
     //- // 하단 버튼
     //- .bottom-buttons

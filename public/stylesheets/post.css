@@ -1,128 +1,116 @@
-body 
-{
-    padding: 20px;
+body {
+  padding: 20px;
 }
 
-.container 
-{
-    width: 60%;
-    margin: auto;
+.container {
+  width: 60%;
+  margin: auto;
 }
 
-.post-info 
-{
-    margin-bottom: 10px;
+.post-info {
+  margin-bottom: 10px;
 }
 
-.row 
-{
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding: 5px;
+.row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding: 5px;
 }
 
-.label 
-{
-    width: 80px;
-    font-weight: bold;
+.label {
+  width: 80px;
+  font-weight: bold;
 }
 
-.content 
-{
-    flex: 1;
+.content {
+  flex: 1;
 }
 
-.button-container 
-{
-    text-align: right;
+.button-container {
+  text-align: right;
 }
 
-.edit-btn 
-{
-
-    padding: 5px 10px;
+.edit-btn {
+  padding: 5px 10px;
 }
 
-.post-content 
-{
-    margin-bottom: 20px;
+.post-content {
+  margin-bottom: 20px;
 }
 
-.comment-section 
-{
-    padding: 10px;
-    margin-bottom: 10px;
+.comment-section {
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
-.comment-title 
-{
-    font-weight: bold;
-    font-size:25px;
-    margin-bottom: 5px;
+.comment-title {
+  font-weight: bold;
+  font-size: 25px;
+  margin-bottom: 5px;
 }
 
-.comments 
-{
-    border-top: 1px solid #ddd;
+.comments {
+  border-top: 1px solid #ddd;
 }
 
-.comment 
-{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding: 5px;
+.comment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding: 5px;
 }
 
-.comment-writer 
-{
-    font-weight: bold;
-    margin-right: 10px;
+.comment-writer {
+  font-weight: bold;
+  margin-right: 10px;
 }
 
-.comment-text 
-{
-    flex: 1;
+.comment-text {
+  flex: 1;
 }
 
-.comment-input 
-{
-    text-align:left;
-    margin-top: 10px;
-    margin-left:0px;
+.comment-input {
+  text-align: left;
+  margin-top: 10px;
+  margin-left: 0px;
 }
 
-.comment-input input 
-{
-    flex: 1;
-    padding: 5px;
+.comment-input input {
+  flex: 1;
+  padding: 5px;
 }
 
-.comment-name
-{
-    width:100px;
+.comment-name {
+  width: 100px;
 }
-.comment-content
-{
-    width:90%;
-    height:50px;
-    margin-top:5px;
+.comment-content {
+  width: 90%;
+  height: 50px;
+  margin-top: 5px;
 }
-.submit-btn 
-{
-    padding: 22px 16px;
+.submit-btn {
+  padding: 22px 16px;
 }
 
-.bottom-buttons 
-{
-    text-align: center;
-    margin-top: 10px;
+.bottom-buttons {
+  text-align: center;
+  margin-top: 10px;
 }
 
-.list-btn, .board-delete-btn, .com-delete-btn 
-{
-    padding: 5px 10px;
-    margin: 5px;
+.list-btn,
+.board-delete-btn,
+.com-delete-btn {
+  padding: 5px 10px;
+  margin: 5px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover {
+  color: gray;
 }
