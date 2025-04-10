@@ -18,6 +18,7 @@ async function getPosts(req, res) {
       sortField,
       sortOrder
     );
+    const isLogined = req.session.user ? true : false;
 
     result = {
       startPage,
@@ -26,6 +27,7 @@ async function getPosts(req, res) {
       posts: posts,
       sortField: sortField,
       sortOrder: sortOrder,
+      isLogined: isLogined,
     };
     res.render("board", result);
     // res.json(result);

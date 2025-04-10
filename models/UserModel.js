@@ -1,19 +1,5 @@
 const pool = require("../config/db");
 
-async function getAllUsers() {
-  let conn;
-  try {
-    conn = await pool.getConnection();
-    const sql = "SELECT * FROM users";
-    const rows = await conn.query();
-    return rows;
-  } catch (error) {
-    throw error;
-  } finally {
-    if (conn) conn.release();
-  }
-}
-
 async function isExistUsername(userName) {
   let conn;
   try {
@@ -94,7 +80,6 @@ async function validUser(username, password) {
 }
 
 module.exports = {
-  getAllUsers,
   isExistUsername,
   createUser,
   deleteUser,

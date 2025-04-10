@@ -1,0 +1,39 @@
+doctype html
+html
+  head
+    title= title
+    script(src="https://code.jquery.com/jquery-3.6.0.min.js") 
+    link(rel='stylesheet', href='/stylesheets/mypage.css')
+  body
+    h1 회원 정보
+
+    //- 회원 정보 표시
+    div.member-info
+      p
+        strong 이름:
+        span= user.nickname
+      p
+        strong 아이디:
+        span= user.username
+      //- p
+      //-   strong 비밀번호:
+      //-   span= user.phone
+
+    //- 회원 정보 수정 폼
+    //- h2 정보 수정
+    //- form(action='/member/update' method='POST')
+    //-   div
+    //-     label(for='name') 이름
+    //-     input(type='text' name='name' id='name' value=user.name)
+    //-   div
+    //-     label(for='email') 이메일
+    //-     input(type='email' name='email' id='email' value=user.email)
+    //-   div
+    //-     label(for='phone') 전화번호
+    //-     input(type='text' name='phone' id='phone' value=user.phone)
+      
+    //-   button(type='submit') 수정하기
+
+    //- 비밀번호 변경 링크
+    //- a(href='/member/change-password') 비밀번호 변경
+    a(href='/board/posts') 홈으로

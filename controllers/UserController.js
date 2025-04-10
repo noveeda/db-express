@@ -1,15 +1,5 @@
 const UserModel = require("../models/UserModel");
 
-// 회원 전체 가져오기
-async function getAllUser(req, res) {
-  try {
-    const users = await UserModel.getAllUsers();
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
-
 // 아이디 중복 확인
 async function isExistUsername(req, res) {
   // return res.json({ test: "test" });
@@ -105,12 +95,34 @@ async function signIn(req, res) {
   }
 }
 
+function viewMyPage(req, res) {
+  try {
+    if (!req.session.user) {
+      res.render("signin");
+    }
+
+    res.render("mypage", { user: req.session.user });
+  } catch (error) {}
+}
+
+function logout(req, res) {
+  try {
+    if (!req.session.user) {
+      res.render("signin");
+    }
+
+    delete req.session.user;
+    res.redirect("/board/posts");
+  } catch (error) {}
+}
+
 module.exports = {
-  //getAllUser,
   viewSignIn,
   viewSignUp,
   signIn,
   isExistUsername,
   createUser,
   deleteUser,
+  viewMyPage,
+  logout,
 };

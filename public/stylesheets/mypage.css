@@ -1,0 +1,119 @@
+/* 기본 스타일 설정 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #f8f8f8;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 960px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 헤더 스타일 */
+h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+/* 회원 정보 표시 */
+.member-info {
+  margin-bottom: 30px;
+}
+
+.member-info p {
+  font-size: 1.1rem;
+  margin: 10px 0;
+}
+
+.member-info strong {
+  font-weight: 600;
+  color: #555;
+}
+
+.member-info span {
+  color: #666;
+}
+
+/* 폼 스타일 */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+form div {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4caf50;
+  background-color: #fff;
+}
+
+button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button:active {
+  background-color: #388e3c;
+}
+
+/* 비밀번호 변경 링크 */
+a {
+  text-align: center;
+  display: block;
+  color: #4caf50;
+  font-size: 1rem;
+  text-decoration: none;
+  margin-top: 20px;
+}
+
+a:hover {
+  text-decoration: underline;
+}

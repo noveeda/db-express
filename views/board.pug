@@ -5,8 +5,12 @@ block content
     header.header
       h1: a(href="/board/posts") 자유 게시판
       nav.nav-bar
-        div: a(href="/user/signin") 로그인
-        div: a(href="/user/signup") 회원가입
+        if isLogined
+          div: a(href="/user/logout") 로그아웃
+          div: a(href="/user/mypage") 마이페이지
+        else
+          div: a(href="/user/signin") 로그인
+          div: a(href="/user/signup") 회원가입
     // 게시글 리스트
     .table
       // 헤더
