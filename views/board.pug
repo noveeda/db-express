@@ -2,9 +2,11 @@ extend board_layout
 
 block content
   .container
-    a(href="/board/posts") 
-      h1 자유 게시판
-
+    header.header
+      h1: a(href="/board/posts") 자유 게시판
+      nav.nav-bar
+        div: a(href="/user/signin") 로그인
+        div: a(href="/user/signup") 회원가입
     // 게시글 리스트
     .table
       // 헤더
@@ -12,18 +14,53 @@ block content
         // 헤더
         - const nextOrder = (sortField === 'post_id' && sortOrder === 'asc') ? 'desc' : 'asc'
         .cell: a(href=`?startPage=${startPage}&sort=post_id&order=${nextOrder}`) 번호
+          if sortField == 'post_id'  
+            if sortOrder == 'asc'
+              span ↑
+            else if sortOrder == 'desc'
+              span ↓
+          else 
+            span  
 
         - const nextTitleOrder = (sortField === 'post_title' && sortOrder === 'asc') ? 'desc' : 'asc'
         .cell: a(href=`?startPage=${startPage}&sort=post_title&order=${nextTitleOrder}`) 제목
+          if sortField == 'post_title'  
+            if sortOrder == 'asc'
+              span ↑
+            else if sortOrder == 'desc'
+              span ↓
+          else 
+            span  
 
         - const nextWriterOrder = (sortField === 'user_nickname' && sortOrder === 'asc') ? 'desc' : 'asc'
         .cell: a(href=`?startPage=${startPage}&sort=user_nickname&order=${nextWriterOrder}`) 작성자
+          if sortField == 'user_nickname'  
+            if sortOrder == 'asc'
+              span ↑
+            else if sortOrder == 'desc'
+              span ↓
+          else 
+            span  
 
         - const nextDateOrder = (sortField === 'post_date' && sortOrder === 'asc') ? 'desc' : 'asc'
         .cell: a(href=`?startPage=${startPage}&sort=post_date&order=${nextDateOrder}`) 작성일
+          if sortField == 'post_date'  
+            if sortOrder == 'asc'
+              span ↑
+            else if sortOrder == 'desc'
+              span ↓
+          else 
+            span  
 
         - const nextViewsOrder = (sortField === 'post_views' && sortOrder === 'asc') ? 'desc' : 'asc'
         .cell: a(href=`?startPage=${startPage}&sort=post_views&order=${nextViewsOrder}`) 조회수
+          if sortField == 'post_views'  
+            if sortOrder == 'asc'
+              span ↑
+            else if sortOrder == 'desc'
+              span ↓
+          else 
+            span  
 
       // 목록
       each post in posts
