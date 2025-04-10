@@ -1,6 +1,7 @@
 const { Model } = require("sequelize");
 const BoardModel = require("../models/BoardModel");
 const { post } = require("../routes/BoardRoute");
+const alertAndBack = require("../utils/AlertAndBack");
 
 async function getPosts(req, res) {
   try {
@@ -35,10 +36,12 @@ async function getPostByID(req, res) {
     const post = await BoardModel.fetchPostByID(id);
     // 댓글 가져오기
     const comments = await BoardModel.fetchCommentsByPostID(id);
+    const isAuthor = req.session.user && req.session.user.id === post.user_id;
 
     const result = {
       post,
       comments,
+      isAuthor,
     };
 
     // res.json(result);
@@ -111,7 +114,35 @@ async function updatePost(req, res) {
     res.status(500).send("글 작성 중 오류가 발생했습니다.");
   }
 }
-// async function getPostByNickname(res, req) {}
+
+async function deletePost(req, res) {
+  try {
+    const postId = req.params.id;
+    const userId = req.session.user?.id;
+
+    // 로그인 체크
+    if (!userId) {
+      return res.render("signin");
+    }
+
+    // 해당 게시글이 본인 글인지 확인
+    const post = await BoardModel.fetchPostByID(postId);
+    if (!post || post.user_id !== userId) {
+      message = "삭제 권한이 없습니다.";
+      return res
+        .status(403)
+        .send(`<script>alert("${message}"); history.back();</script>`);
+    }
+
+    // 삭제
+    await BoardModel.deletePost(postId);
+
+    res.redirect("/board/posts"); // 게시글 목록으로 이동
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("서버 에러");
+  }
+}
 
 module.exports = {
   getPosts,
@@ -119,4 +150,5 @@ module.exports = {
   showPostEditor,
   submitPost,
   updatePost,
+  deletePost,
 };

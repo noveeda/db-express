@@ -16,4 +16,7 @@ router.get("/post/:id/edit", BoardController.showPostEditor);
 router.post("/post", BoardController.submitPost);
 // 게시글 수정
 router.post("/post/:id/edit", BoardController.updatePost);
+// 게시글 삭제
+router.post("/post/:id/delete", BoardController.deletePost);
+
 module.exports = router;

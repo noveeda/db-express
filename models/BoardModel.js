@@ -168,6 +168,20 @@ async function updatePost(postId, title, content) {
     if (conn) conn.release();
   }
 }
+
+async function deletePost(postId) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const sql = `DELETE FROM posts WHERE post_id = ?`;
+    const result = await conn.query(sql, [postId]);
+    return result;
+  } catch (err) {
+    throw err;
+  } finally {
+    if (conn) conn.release();
+  }
+}
 module.exports = {
   getPosts,
   fetchPostByID,
@@ -176,4 +190,5 @@ module.exports = {
   getPostsCount,
   createPost,
   updatePost,
+  deletePost,
 };

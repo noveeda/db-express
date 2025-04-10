@@ -11,8 +11,14 @@ block content
         .label 제목
         .content #{post.post_title}
         .button-container
-          form(action=`/board/post/${post.post_id}/edit`, method="get") 
-            button.edit-btn(type="submit") 수정하기
+          if isAuthor
+            form(action=`/board/post/${post.post_id}/edit`, method="get") 
+              button.edit-btn(type="submit") 수정하기
+              
+            form(action=`/board/post/${post.post_id}/delete`, method="post", onsubmit="return confirm('정말 삭제하시겠습니까?');")
+              button.delete-btn(type="submit") 삭제하기
+          //- form(action=`/board/post/${post.post_id}/edit`, method="get") 
+          //-   button.edit-btn(type="submit") 수정하기
       .row
         .label 작성자
         .content #{post.user_nickname}
@@ -41,12 +47,6 @@ block content
     
       // 댓글 입력
       .comment-input
-        //- input.comment-name(type="text" placeholder="닉네임")
         form(action="/comment/:id", method="post") 
           input.comment-content(type="text" placeholder="댓글을 입력해주세요.(100자)")
           button.submit-btn(onclick="") 완료
-    
-    //- // 하단 버튼
-    //- .bottom-buttons
-    //-   button.list-btn(onclick="location.href='list.pug'") 목록
-    //-   button.board-delete-btn(onclick="") 삭제
