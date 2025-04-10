@@ -7,19 +7,28 @@ async function getPosts(req, res) {
   try {
     const startPage = parseInt(req.query.startPage) || 1;
     const count = parseInt(req.query.count) || 10;
+    const sortField = req.query.sort || "post_id";
+    const sortOrder = req.query.order || "desc";
 
     const totalPostsCount = await BoardModel.getPostsCount();
     const totalPages = Math.ceil(totalPostsCount / count);
-    const posts = await BoardModel.getPosts(startPage, count);
+    const posts = await BoardModel.getPosts(
+      startPage,
+      count,
+      sortField,
+      sortOrder
+    );
 
     result = {
       startPage,
       count,
       totalPages,
       posts: posts,
+      sortField: sortField,
+      sortOrder: sortOrder,
     };
-    // res.json(result);
     res.render("board", result);
+    // res.json(result);
   } catch (error) {
     throw error;
   }

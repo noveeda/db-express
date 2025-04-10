@@ -58,3 +58,10 @@ a:hover {
   text-align: right;
   margin-top: 10px;
 }
+
+.page.active {
+  background-color: #333;
+  color: #fff;
+  border-radius: 4px;
+  padding: 5px 10px;
+}

@@ -1,13 +1,10 @@
 const pool = require("../config/db");
 
 // 페이지네이션 한 포스트 가져오기
-async function getPosts(_startPage, _count) {
+async function getPosts(_startPage, _count, _sortField, _sortOrder) {
   let conn;
   const startPage = _startPage || 1;
   const count = _count || 10;
-  // const count = _count || 100;
-  // if (count < 0) count = 1; // 최소값 제한
-  // if (count > 10) count = 10; // 최대값 제한
 
   try {
     // 페이지 번호 증가에 따라 바뀌는 offset 옵션
@@ -15,6 +12,18 @@ async function getPosts(_startPage, _count) {
 
     // db pool을 통해 커넥션 가져오기
     conn = await pool.getConnection();
+
+    const allowedSortFields = [
+      "post_id",
+      "post_title",
+      "post_date",
+      "post_views",
+      "user_nickname",
+    ];
+    const sortField = allowedSortFields.includes(_sortField)
+      ? _sortField
+      : "post_id";
+    const sortOrder = _sortOrder === "desc" ? "DESC" : "ASC";
 
     const sql = `
     SELECT 
@@ -26,7 +35,7 @@ async function getPosts(_startPage, _count) {
     FROM posts as P 
     JOIN users as U 
     ON P.user_id = U.user_id 
-    ORDER BY post_id desc LIMIT ? OFFSET ?`;
+    ORDER BY ${sortField} ${sortOrder} LIMIT ? OFFSET ?`;
     /**
      * 테이블 posts 에서
      * OFFSET 에서부터

@@ -9,12 +9,22 @@ block content
     .table
       // 헤더
       .row.header
-        .cell 번호
-        .cell 제목
-        .cell 작성자
-        .cell 작성일
-        .cell 조회수
-      
+        // 헤더
+        - const nextOrder = (sortField === 'post_id' && sortOrder === 'asc') ? 'desc' : 'asc'
+        .cell: a(href=`?startPage=${startPage}&sort=post_id&order=${nextOrder}`) 번호
+
+        - const nextTitleOrder = (sortField === 'post_title' && sortOrder === 'asc') ? 'desc' : 'asc'
+        .cell: a(href=`?startPage=${startPage}&sort=post_title&order=${nextTitleOrder}`) 제목
+
+        - const nextWriterOrder = (sortField === 'user_nickname' && sortOrder === 'asc') ? 'desc' : 'asc'
+        .cell: a(href=`?startPage=${startPage}&sort=user_nickname&order=${nextWriterOrder}`) 작성자
+
+        - const nextDateOrder = (sortField === 'post_date' && sortOrder === 'asc') ? 'desc' : 'asc'
+        .cell: a(href=`?startPage=${startPage}&sort=post_date&order=${nextDateOrder}`) 작성일
+
+        - const nextViewsOrder = (sortField === 'post_views' && sortOrder === 'asc') ? 'desc' : 'asc'
+        .cell: a(href=`?startPage=${startPage}&sort=post_views&order=${nextViewsOrder}`) 조회수
+
       // 목록
       each post in posts
         .row
@@ -41,18 +51,18 @@ block content
 
       // ◄ 이전 페이지 그룹
       if groupStart > 1
-        a.page(href=`?startPage=${groupStart - 1}&count=10`) ◄
+        a.page(href=`?startPage=${groupStart - 1}&count=10&sort=${sortField}&order=${sortOrder}`) ◄
 
       // 페이지 번호들
       each num in Array(groupEnd - groupStart + 1).fill(0).map((_, idx) => groupStart + idx)
         a.page(
-          href=`?startPage=${num}&count=10`,
+          href=`?startPage=${num}&count=10&sort=${sortField}&order=${sortOrder}`,
           class=(num === curPage ? 'active' : '')
         ) #{num}
 
       // ► 다음 페이지 그룹
       if groupEnd < totalPages
-        a.page(href=`?startPage=${groupEnd + 1}&count=10`) ►
+        a.page(href=`?startPage=${groupEnd + 1}&count=10&sort=${sortField}&order=${sortOrder}`) ►
 
 
     // 글쓰기 버튼
