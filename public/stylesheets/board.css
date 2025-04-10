@@ -4,6 +4,7 @@ body {
 .container {
   width: 80%;
   margin: auto;
+  /* display: flex; */
 }
 .search-box {
   display: flex;
@@ -64,4 +65,17 @@ a:hover {
   color: #fff;
   border-radius: 4px;
   padding: 5px 10px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between; /* h1은 왼쪽, nav는 오른쪽 */
+  align-items: center;
+}
+
+.nav-bar {
+  display: flex;
+  gap: 10px; /* 항목 사이 간격 */
+  justify-content: flex-end; /* 오른쪽 정렬하고 싶으면 */
+  align-items: center;
 }
