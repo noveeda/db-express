@@ -191,6 +191,60 @@ async function deletePost(postId) {
     if (conn) conn.release();
   }
 }
+
+async function insertComment(postId, userId, comment) {
+  let conn;
+  try {
+    // console.log(`insertComment: ${postId}, ${userId}, ${comment}`);
+    conn = await pool.getConnection();
+    const sql = `
+      INSERT INTO comments (post_id, user_id, comment_content, comment_date)
+      VALUES (?, ?, ?, NOW())
+    `;
+    const result = await conn.query(sql, [postId, userId, comment]);
+
+    return result;
+  } catch (error) {
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
+async function fetchCommentByID(commentId, userId) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const sql = `
+      SELECT comment_id, user_id
+      FROM comments
+      WHERE comment_id = ? AND user_id = ?;
+    `;
+
+    // 첫번째 배열 반환
+    const [result] = await conn.query(sql, [commentId, userId]);
+
+    return result;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
+async function deleteComment(commentId) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const sql = `DELETE FROM comments WHERE comment_id = ?`;
+    const result = await conn.query(sql, [commentId]);
+    return result;
+  } catch (err) {
+    throw err;
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
 module.exports = {
   getPosts,
   fetchPostByID,
@@ -200,4 +254,7 @@ module.exports = {
   createPost,
   updatePost,
   deletePost,
+  insertComment,
+  fetchCommentByID,
+  deleteComment,
 };

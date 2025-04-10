@@ -46,11 +46,17 @@ async function getPostByID(req, res) {
     // 댓글 가져오기
     const comments = await BoardModel.fetchCommentsByPostID(id);
     const isAuthor = req.session.user && req.session.user.id === post.user_id;
-
+    const isCommentAuthor = comments.map((comment) => {
+      if (req.session.user && comment.user_id == req.session.user.id) {
+        return true;
+      }
+      return false;
+    });
     const result = {
       post,
       comments,
       isAuthor,
+      isCommentAuthor,
     };
 
     // res.json(result);
@@ -89,7 +95,6 @@ async function showPostEditor(req, res) {
   }
 }
 
-// 만드는 중
 async function submitPost(req, res) {
   try {
     let { title, content } = req.body;
@@ -148,8 +153,74 @@ async function deletePost(req, res) {
 
     res.redirect("/board/posts"); // 게시글 목록으로 이동
   } catch (err) {
-    console.error(err);
-    res.status(500).send("서버 에러");
+    throw err;
+  }
+}
+
+async function addComment(req, res) {
+  try {
+    if (!req.session.user) {
+      res.send(
+        `<script>
+          alert("로그인이 필요합니다.");
+          location.href = "/user/signin";
+        </script>`
+      );
+    }
+
+    const postId = parseInt(req.params.postId);
+    const { comment } = req.body;
+    const userId = req.session.user.id;
+
+    if (!comment.trim()) {
+      res.send(
+        `<script>
+          alert("댓글 내용을 입력해주세요."); 
+          history.back();
+        </script>`
+      );
+    }
+
+    const result = await BoardModel.insertComment(postId, userId, comment);
+
+    res.redirect(`/board/post/${postId}`);
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function deleteComment(req, res) {
+  try {
+    const commentId = parseInt(req.params.commentId);
+    const postId = parseInt(req.params.postId);
+    const userId = req.session.user?.id;
+
+    if (!userId) {
+      return res.send(`
+        <script>
+          alert("로그인 후 시도하세요.");
+          history.back();
+        </script>`);
+    }
+
+    // 본인 댓글인지 확인
+    const comment = await BoardModel.fetchCommentByID(commentId, userId);
+    console.log(comment);
+    if (!comment || comment.user_id !== userId) {
+      message = "삭제 권한이 없습니다.";
+      return res.send(`
+          <script>
+            alert("${message}"); 
+            history.back();
+          </script>`);
+    }
+
+    // 삭제
+    await BoardModel.deleteComment(commentId);
+
+    res.redirect(`/board/post/${postId}`); // 게시글 목록으로 이동
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -160,4 +231,6 @@ module.exports = {
   submitPost,
   updatePost,
   deletePost,
+  addComment,
+  deleteComment,
 };

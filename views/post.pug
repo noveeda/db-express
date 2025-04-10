@@ -17,8 +17,6 @@ block content
               
             form(action=`/board/post/${post.post_id}/delete`, method="post", onsubmit="return confirm('정말 삭제하시겠습니까?');")
               button.delete-btn(type="submit") 삭제하기
-          //- form(action=`/board/post/${post.post_id}/edit`, method="get") 
-          //-   button.edit-btn(type="submit") 수정하기
       .row
         .label 작성자
         .content #{post.user_nickname}
@@ -43,10 +41,17 @@ block content
           .comment
             .comment-writer #{comment.user_nickname}
             .comment-text #{comment.comment_content}
-            button.com-delete-btn(onclick="") 삭제
+            if isCommentAuthor[index]
+              form(action=`/board/comment/${post.post_id}/${comment.comment_id}/delete`, method="post") 
+                button.com-delete-btn(type="submit") 삭제
     
       // 댓글 입력
       .comment-input
-        form(action="/comment/:id", method="post") 
-          input.comment-content(type="text" placeholder="댓글을 입력해주세요.(100자)")
-          button.submit-btn(onclick="") 완료
+        form(action=`/board/comment/${post.post_id}`, method="post") 
+          textarea.comment-content(
+            type="text",
+            name="comment", 
+            placeholder="댓글을 입력해주세요.(100자)",
+            maxlength=100
+            required)
+          button.submit-btn(type="submit") 작성

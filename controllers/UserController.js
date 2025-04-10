@@ -98,8 +98,6 @@ async function signIn(req, res) {
       username: user.username,
       nickname: user.nickname,
     };
-
-    console.table(req.session.user);
     res.redirect("/board/posts");
     // res.status(200).json({ message: "로그인 성공" });
   } catch (err) {

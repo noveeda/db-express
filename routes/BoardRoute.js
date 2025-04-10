@@ -14,6 +14,12 @@ router.get("/post/:id/edit", BoardController.showPostEditor);
 
 // 게시글 업로드
 router.post("/post", BoardController.submitPost);
+// 댓글 작성
+router.post("/comment/:postId", BoardController.addComment);
+router.post(
+  "/comment/:postId/:commentId/delete",
+  BoardController.deleteComment
+);
 // 게시글 수정
 router.post("/post/:id/edit", BoardController.updatePost);
 // 게시글 삭제
