@@ -38,6 +38,7 @@ app.listen(port, function () {
   console.log(`Server running on http://localhost:${port}`);
 });
 
-app.get("/", (req, res) => {
-  res.json({ mesage: "Hello World" });
+// ❗️맨 마지막에 정의되지 않은 모든 경로 처리
+app.use((req, res, next) => {
+  res.redirect("/board/posts");
 });
