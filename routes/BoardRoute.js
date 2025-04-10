@@ -4,9 +4,11 @@ const BoardController = require("../controllers/BoardController");
 
 // 게시글 전체 불러오기
 router.get("/posts", BoardController.getPosts);
+// 제목이나 작성자로 게시글 조회
+router.get("/post", BoardController.getPostsByOption);
 // 게시글 에디터 불러오기
 // 작성 폼
-router.get("/post", BoardController.showPostEditor);
+router.get("/post/editor", BoardController.showPostEditor);
 // 특정 게시글 불러오기
 router.get("/post/:id", BoardController.getPostByID);
 // 수정 폼

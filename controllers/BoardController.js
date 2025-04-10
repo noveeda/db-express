@@ -88,10 +88,9 @@ async function showPostEditor(req, res) {
       if (!post || post.user_id !== req.session.user.id) {
         error = "수정 권한이 없습니다.";
         res.redirect("/board/posts");
-      } else {
-        res.render("posteditor", { error, post });
       }
     }
+    res.render("posteditor", { error, post });
   } catch (error) {
     res.status(500).send("서버 오류");
   }
@@ -226,6 +225,12 @@ async function deleteComment(req, res) {
   }
 }
 
+async function getPostsByOption(req, res) {
+  console.table(req.body);
+  console.table(req.params);
+  console.table(req.query);
+}
+
 module.exports = {
   getPosts,
   getPostByID,
@@ -235,4 +240,5 @@ module.exports = {
   deletePost,
   addComment,
   deleteComment,
+  getPostsByOption,
 };

@@ -78,11 +78,12 @@ block content
         
     // 검색창
     .search-box
-      select
-        option 제목
-        option 작성자
-      input(type="text" placeholder="검색어를 입력하세요.")
-      button 🔍
+      form(action="/board/post", method="get") 
+        select
+          option 제목
+          option 작성자
+        input(type="text" placeholder="검색어를 입력하세요.")
+        button 🔍
     // 페이징
     .pagination
       - var curPage = parseInt(startPage)
@@ -108,5 +109,5 @@ block content
 
     // 글쓰기 버튼
     .write-btn
-      a(href="/board/post") 
+      a(href="/board/post/editor") 
         button 글쓰기 
