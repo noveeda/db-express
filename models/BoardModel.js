@@ -85,6 +85,7 @@ async function fetchPostByID(id) {
         P.post_id, 
         P.post_title, 
         U.user_nickname, 
+        U.user_id,
         DATE_FORMAT(P.post_date, '%Y-%m-%d') as post_date, 
         P.post_views,
         P.post_content
@@ -147,12 +148,32 @@ async function createPost(userId, title, content) {
   }
 }
 
+async function updatePost(postId, title, content) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    const sql = `
+      UPDATE posts
+      SET post_title = ?, post_content = ?
+      WHERE post_id = ?;
+    `;
+
+    const result = await conn.query(sql, [title, content, postId]);
+
+    return Number(result.affectedRows);
+  } catch (err) {
+    throw err;
+  } finally {
+    if (conn) conn.release();
+  }
+}
 module.exports = {
   getPosts,
-  // getPostByID, 기존 코드 개선
   fetchPostByID,
   increasePostViews,
   fetchCommentsByPostID,
   getPostsCount,
   createPost,
+  updatePost,
 };

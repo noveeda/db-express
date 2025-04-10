@@ -11,7 +11,8 @@ block content
         .label 제목
         .content #{post.post_title}
         .button-container
-          button.edit-btn(onclick="") 수정하기
+          form(action=`/board/post/${post.post_id}/edit`, method="get") 
+            button.edit-btn(type="submit") 수정하기
       .row
         .label 작성자
         .content #{post.user_nickname}

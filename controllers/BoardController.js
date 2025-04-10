@@ -1,3 +1,4 @@
+const { Model } = require("sequelize");
 const BoardModel = require("../models/BoardModel");
 const { post } = require("../routes/BoardRoute");
 
@@ -27,12 +28,9 @@ async function getPostByID(req, res) {
   try {
     const id = parseInt(req.params.id);
 
-    // 기존 코드
-    // let result = await BoardModel.getPostByID(id);
-
     // 동기 호출로 데이터 보장성 향상.
     // 조회수 증가
-    await BoardModel.increasePostViews();
+    await BoardModel.increasePostViews(id);
     // 게시글 가져오기
     const post = await BoardModel.fetchPostByID(id);
     // 댓글 가져오기
@@ -50,16 +48,32 @@ async function getPostByID(req, res) {
   }
 }
 
-function showPostEditor(req, res) {
+async function showPostEditor(req, res) {
   try {
+    // 로그인 안됐으면 로그인 페이지로
     if (!req.session.user) return res.render("signin");
 
-    const error = req.session.error;
-    req.session.error = null; // 에러 한 번 보여주면 삭제
+    // 업로드할때 미입력 데이터 있을 때 띄울 에러 메시지
+    let error = req.session.error;
+    req.session.error = null;
 
-    res.render("posteditor", { error });
+    // 수정할 포스트 id
+    const postId = req.params.id;
+    let post = null;
+
+    // 수정할 포스트 id가 있으면 게시글 불러오기
+    if (postId) {
+      post = await BoardModel.fetchPostByID(postId);
+
+      if (!post || post.user_id !== req.session.user.id) {
+        error = "수정 권한이 없습니다.";
+        res.redirect("/board/posts");
+      } else {
+        res.render("posteditor", { error, post });
+      }
+    }
   } catch (error) {
-    throw error;
+    res.status(500).send("서버 오류");
   }
 }
 
@@ -68,14 +82,6 @@ async function submitPost(req, res) {
   try {
     let { title, content } = req.body;
     const userId = req.session.user.id; // user_id를 세션에 담음
-
-    console.log(
-      `user: ${JSON.stringify(
-        req.session.user,
-        4,
-        null
-      )}\ntitle: ${title}\ncontent:${content}`
-    );
     //
     if (!title || !content) {
       req.session.error = "제목과 내용을 모두 입력해주세요.";
@@ -85,15 +91,26 @@ async function submitPost(req, res) {
     content = content.replace(/\r?\n/g, "<br>");
 
     const postId = await BoardModel.createPost(userId, title, content);
-    console.log(`postId: ${postId}`);
 
     res.redirect(`/board/post/${postId}`);
   } catch (err) {
-    console.error(err);
     res.status(500).send("글 작성 중 오류가 발생했습니다.");
   }
 }
 
+async function updatePost(req, res) {
+  try {
+    let postId = parseInt(req.params.id);
+    let { title, content } = req.body;
+
+    let updatePost = await BoardModel.updatePost(postId, title, content);
+
+    // res.json(updatePost);
+    res.redirect(`/board/post/${postId}`);
+  } catch (err) {
+    res.status(500).send("글 작성 중 오류가 발생했습니다.");
+  }
+}
 // async function getPostByNickname(res, req) {}
 
 module.exports = {
@@ -101,4 +118,5 @@ module.exports = {
   getPostByID,
   showPostEditor,
   submitPost,
+  updatePost,
 };

@@ -13,7 +13,8 @@ html(lang="ko")
         script.
           alert("#{error}")
 
-      form(action="/board/post", method="post") 
+      form(
+        action=post ? `/board/post/${post.post_id}/edit` : "/board/post", method="post")
         // 게시글 정보
         .post-info
           .row
@@ -23,6 +24,7 @@ html(lang="ko")
                 type="text", 
                 name="title",
                 placeholder="제목을 입력해주세요.",
+                value=post ? post.post_title : '',
                 required)
 
         // 게시글 내용
@@ -30,9 +32,8 @@ html(lang="ko")
           textarea.input-content(
             name="content",
             placeholder="게시글 내용을 입력해주세요.",
-            required)
+            required)= post ? post.post_content : ''
 
         // 하단 버튼
         .bottom-buttons
-          button.insert-ok-btn(type="submit") 완료
-          //- button.cancel-btn(onclick="") 취소
+          button.insert-ok-btn(type="submit")= post ? "수정" : "작성"
