@@ -121,6 +121,7 @@ async function updatePost(req, res) {
     let postId = parseInt(req.params.id);
     let { title, content } = req.body;
 
+    content = content.replace(/\r?\n/g, "<br>");
     let updatePost = await BoardModel.updatePost(postId, title, content);
 
     // res.json(updatePost);
@@ -161,7 +162,7 @@ async function deletePost(req, res) {
 async function addComment(req, res) {
   try {
     if (!req.session.user) {
-      res.send(
+      return res.send(
         `<script>
           alert("로그인이 필요합니다.");
           location.href = "/user/signin";
@@ -174,7 +175,7 @@ async function addComment(req, res) {
     const userId = req.session.user.id;
 
     if (!comment.trim()) {
-      res.send(
+      return res.send(
         `<script>
           alert("댓글 내용을 입력해주세요."); 
           history.back();
@@ -184,7 +185,7 @@ async function addComment(req, res) {
 
     const result = await BoardModel.insertComment(postId, userId, comment);
 
-    res.redirect(`/board/post/${postId}`);
+    return res.redirect(`/board/post/${postId}`);
   } catch (error) {
     throw error;
   }
@@ -206,7 +207,7 @@ async function deleteComment(req, res) {
 
     // 본인 댓글인지 확인
     const comment = await BoardModel.fetchCommentByID(commentId, userId);
-    console.log(comment);
+
     if (!comment || comment.user_id !== userId) {
       message = "삭제 권한이 없습니다.";
       return res.send(`
@@ -219,7 +220,7 @@ async function deleteComment(req, res) {
     // 삭제
     await BoardModel.deleteComment(commentId);
 
-    res.redirect(`/board/post/${postId}`); // 게시글 목록으로 이동
+    return res.redirect(`/board/post/${postId}`); // 게시글 목록으로 이동
   } catch (error) {
     throw error;
   }

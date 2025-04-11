@@ -32,7 +32,7 @@ html(lang="ko")
           textarea.input-content(
             name="content",
             placeholder="게시글 내용을 입력해주세요.",
-            required)= post ? post.post_content : ''
+            required)= post ? post.post_content.replace(/<br\s*\/?>/gi, '\n') : ''
 
         // 하단 버튼
         .bottom-buttons

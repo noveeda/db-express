@@ -1,119 +1,169 @@
-/* 기본 스타일 설정 */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  font-family: "Roboto", sans-serif;
-  background-color: #f8f8f8;
-  color: #333;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: 100vh;
+  padding: 40px;
+  background-color: #f9f9f9;
+  font-family: sans-serif;
+}
+.nav_bar {
+  padding-top: 20px;
+  text-align: right;
+}
+.nav {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  cursor: pointer;
 }
 
-.container {
-  width: 100%;
-  max-width: 960px;
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.nav-bar {
+  display: flex;
+  gap: 10px; /* 항목 사이 간격 */
+  justify-content: flex-end; /* 오른쪽 정렬하고 싶으면 */
+  align-items: center;
 }
 
-/* 헤더 스타일 */
-h1 {
-  font-size: 2rem;
-  font-weight: 500;
-  margin-bottom: 20px;
-  color: #333;
-  text-align: center;
+.main-container {
+  background: white;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 80%;
+  max-width: 800px;
 }
 
-/* 회원 정보 표시 */
-.member-info {
+.container,
+.container_post {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
   margin-bottom: 30px;
 }
 
-.member-info p {
-  font-size: 1.1rem;
-  margin: 10px 0;
+h2 {
+  font-size: 20px;
+  border-bottom: 2px solid #333;
+  padding-bottom: 10px;
 }
 
-.member-info strong {
-  font-weight: 600;
-  color: #555;
-}
-
-.member-info span {
-  color: #666;
-}
-
-/* 폼 스타일 */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-form div {
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 5px;
-}
-
-input {
-  padding: 10px;
-  font-size: 1rem;
+.btn {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #eee;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f7f7f7;
-  color: #333;
-}
-
-input:focus {
-  outline: none;
-  border-color: #4caf50;
-  background-color: #fff;
-}
-
-button {
-  padding: 12px 20px;
-  font-size: 1rem;
-  color: white;
-  background-color: #4caf50;
-  border: none;
-  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #45a049;
+.info {
+  flex: 1;
 }
 
-button:active {
-  background-color: #388e3c;
+.row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #ddd;
 }
 
-/* 비밀번호 변경 링크 */
-a {
+.row span:first-child {
+  font-weight: bold;
+}
+
+.btn-small {
+  font-size: 12px;
+  padding: 10px 8px;
+  margin-left: 10px;
+  background-color: #f2f2f2;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/*게시글 조회 css*/
+.container_post {
+  width: 800px;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+.row_post span {
+  font-weight: bold;
+}
+
+.row_post,
+.row_post_list {
+  display: grid;
+  grid-template-columns: 10% 50% 15% 25%;
+  padding: 12px 0;
+  border-bottom: 1px solid #ddd;
+  align-items: center;
+}
+.header-row div {
+  font-weight: bold;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between; /* h1은 왼쪽, nav는 오른쪽 */
+  align-items: center;
+}
+.col-num {
+  flex: 0 0 60px;
   text-align: center;
-  display: block;
-  color: #4caf50;
-  font-size: 1rem;
+}
+
+.col-title {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.col-views {
+  flex: 0 0 60px;
+  text-align: center;
+}
+
+.col-actions {
+  flex: 0 0 100px;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+/*닉네임 수정창*/
+.input-field {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+a {
   text-decoration: none;
-  margin-top: 20px;
+  color: black;
+  font-weight: bold;
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 5px;
 }
 
 a:hover {
-  text-decoration: underline;
+  color: gray;
+  box-shadow: gray 1px 1px 1px;
+}
+.delete-account-btn {
+  border-radius: 5px;
+  border: none;
+  background-color: rgb(255, 0, 0);
+  box-shadow: rgb(180, 0, 3) 1px 1px 0px;
+  height: 40px;
+  color: white;
+}
+
+.delete-account-btn:hover {
+  background-color: rgb(180, 0, 0);
 }

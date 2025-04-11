@@ -13,6 +13,6 @@ router.post("/check-username", UserController.isExistUsername);
 router.post("/signup", UserController.createUser);
 router.post("/signin", UserController.signIn);
 
-router.delete("/:username", UserController.deleteUser);
+router.post("/:userid/delete", UserController.deleteUser);
 
 module.exports = router;

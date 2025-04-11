@@ -1,39 +1,59 @@
 doctype html
-html
+html(lang="ko")
   head
-    title= title
-    script(src="https://code.jquery.com/jquery-3.6.0.min.js") 
-    link(rel='stylesheet', href='/stylesheets/mypage.css')
+    meta(charset="UTF-8")
+    title 회원정보
+    link(rel="stylesheet", href="/stylesheets/mypage.css")
+  
   body
-    h1 회원 정보
-
-    //- 회원 정보 표시
-    div.member-info
-      p
-        strong 이름:
-        span= user.nickname
-      p
-        strong 아이디:
-        span= user.username
-      //- p
-      //-   strong 비밀번호:
-      //-   span= user.phone
-
-    //- 회원 정보 수정 폼
-    //- h2 정보 수정
-    //- form(action='/member/update' method='POST')
-    //-   div
-    //-     label(for='name') 이름
-    //-     input(type='text' name='name' id='name' value=user.name)
-    //-   div
-    //-     label(for='email') 이메일
-    //-     input(type='email' name='email' id='email' value=user.email)
-    //-   div
-    //-     label(for='phone') 전화번호
-    //-     input(type='text' name='phone' id='phone' value=user.phone)
+    .main-container
+      // 기본 회원정보
+      .container
+        header.header
+          h2 기본 회원정보
+          nav.nav-bar
+            a(href="/board/posts") 홈으로
+        .info
+          .row
+            span.label 이름
+            span.value= user.user_nickname
+          .row
+            span.label 아이디
+            span.value= user.user_username
+          .row
+            span.label 비밀번호
+            span.value
+              //| 에빈밍
+              // 변경 누르면 나오는 input창
+              input.input-field(
+                type="text", 
+                value=user.user_password,
+                placeholder="비밀번호를 입력해주세요."
+                required)
+                
+              button.btn-small 변경
       
-    //-   button(type='submit') 수정하기
+      .container_post
+        h2 내가 쓴 게시글
+        .info
+          .row_post.header-row
+            .col-num 번호
+            .col-title 제목
+            .col-views 조회수
+            .col-actions 비고
 
-    //- 비밀번호 변경 링크
-    //- a(href='/member/change-password') 비밀번호 변경
-    a(href='/board/posts') 홈으로
+          // 게시글 1
+          each post in posts
+            .row_post_list
+              .col-num= post.post_id
+              .col-title: a(href=`/board/post/${post.post_id}`)= post.post_title
+              .col-views= post.post_views
+              .col-actions
+                form(action=`/board/post/${post.post_id}/edit`, method="get") 
+                  button(type="submit").btn-small 수정
+                form(action=`/board/post/${post.post_id}/delete`, method="post", onsubmit="return confirm('정말 삭제하시겠습니까?');")
+                  button(type="submit").btn-small 삭제
+
+          .nav_bar
+            form(action=`/user/${user.user_id}/delete`, method="post", onsubmit="return confirm('정말 삭제하시겠습니까?');")
+              button.nav.sig.delete-account-btn 회원탈퇴

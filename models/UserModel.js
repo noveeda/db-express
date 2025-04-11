@@ -1,5 +1,11 @@
+const { compile } = require("pug");
 const pool = require("../config/db");
 
+/**
+ *
+ * @param {string} userName 유저 아이디
+ * @returns
+ */
 async function isExistUsername(userName) {
   let conn;
   try {
@@ -14,6 +20,33 @@ async function isExistUsername(userName) {
   }
 }
 
+/**
+ *
+ * @param {Number} userId 유저 id
+ * @returns 있으면 true, 없으면 false
+ */
+async function checkUserByUserId(userId) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const sql = "SELECT COUNT(*) FROM users WHERE user_id = ?";
+    const params = [userId];
+    const [rows] = await conn.query(sql, params);
+    return rows["COUNT(*)"] > 0;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
+/**
+ *
+ * @param {string} username 유저 아이디
+ * @param {string} password 유저 비밀번호
+ * @param {string} nickname 유저 닉네임
+ * @returns
+ */
 async function createUser(username, password, nickname) {
   let conn;
   try {
@@ -41,17 +74,43 @@ async function createUser(username, password, nickname) {
   }
 }
 
-async function deleteUser(id) {
+/**
+ *
+ * @param {Number} id userId
+ * @returns
+ */
+async function deleteUser(userId) {
   let conn;
   try {
     conn = await pool.getConnection();
-    const sql = "DELETE FROM users WHERE id = ?";
-    const result = await conn.query(sql, [id]);
+    const sql = "DELETE FROM users WHERE user_id = ?";
+    const params = [userId];
+    const result = await conn.query(sql, params);
     return result.affectedRows > 0;
   } catch (error) {
     throw error;
   } finally {
     if (conn) conn.release();
+  }
+}
+
+async function getUser(userId) {
+  let conn;
+
+  try {
+    conn = await pool.getConnection();
+
+    const sql = `
+    SELECT * 
+    FROM users
+    WHERE user_id = ?`;
+    const params = [userId];
+    const [result] = await conn.query(sql, params);
+    return result;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (conn) await conn.release();
   }
 }
 
@@ -62,7 +121,7 @@ async function validUser(username, password) {
     const sql = `SELECT 
       user_id id, 
       user_username username,
-      user_nickname nickname 
+      user_nickname nickname
       FROM users 
       WHERE user_username = ? AND user_password = ?;`;
     const result = await conn.query(sql, [username, password]);
@@ -81,7 +140,9 @@ async function validUser(username, password) {
 
 module.exports = {
   isExistUsername,
+  checkUserByUserId,
   createUser,
   deleteUser,
   validUser,
+  getUser,
 };

@@ -245,16 +245,80 @@ async function deleteComment(commentId) {
   }
 }
 
+async function getPostsByUserId(userId) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    // 번호 제목 조회수 수정 삭제
+    const sql = `
+    SELECT 
+    post_id,
+    post_title,
+    post_views,
+    post_date
+    FROM posts
+    WHERE user_id = ?
+    ORDER BY post_id;
+    `;
+    const params = [userId];
+    const result = await conn.query(sql, params);
+
+    return result;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
+async function deletePostsByUserId(userId) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const sql = `
+    DELETE FROM posts WHERE user_id = ?;`;
+    const params = [userId];
+
+    const result = conn.query(sql, params);
+    return result ? true : false;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
+//
+async function deleteCommentsByUserId(userId) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const sql = `
+    DELETE FROM comments WHERE user_id = ?;`;
+    const params = [userId];
+
+    const result = conn.query(sql, params);
+    return result ? true : false;
+  } catch (error) {
+    throw error;
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
 module.exports = {
-  getPosts,
-  fetchPostByID,
-  increasePostViews,
-  fetchCommentsByPostID,
-  getPostsCount,
-  createPost,
-  updatePost,
-  deletePost,
-  insertComment,
-  fetchCommentByID,
-  deleteComment,
+  getPosts, // 전체 게시물 조회
+  fetchPostByID, // PostID 게시물 조회
+  increasePostViews, // 게시물 조회수 증가
+  fetchCommentsByPostID, // 게시물 댓글 조회
+  getPostsCount, // 총 게시물 개수 조회
+  createPost, // 게시물 작성
+  updatePost, // 게시물 수정
+  deletePost, // 게시물 삭제
+  insertComment, // 댓글 추가
+  fetchCommentByID, // 댓글 조회
+  deleteComment, // 댓글 삭제
+  getPostsByUserId, // 사용자가 작성한 게시물 조회
+  deletePostsByUserId, // 사용자의 게시글 삭제
+  deleteCommentsByUserId, // 사용자의
 };

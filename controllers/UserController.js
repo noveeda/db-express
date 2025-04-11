@@ -1,4 +1,6 @@
 const UserModel = require("../models/UserModel");
+const { get } = require("../routes/UserRoute");
+const UserService = require("../services/UserService");
 
 // 아이디 중복 확인
 async function isExistUsername(req, res) {
@@ -36,11 +38,43 @@ async function createUser(req, res) {
 // 회원 삭제
 async function deleteUser(req, res) {
   try {
-    const success = await UserModel.deleteUser(req.params.id);
-    if (!success) return res.status(404).json({ message: "User not found" });
-    res.json({ message: "User deleted successfully" });
+    const userId = parseInt(req.params.userid);
+    // 로그인이 안돼있거나 로그인한 사람과 params로 가져온 userId가 맞지 않는 경우 예외처리
+    if (!req.session.user || userId !== req.session.user.id) {
+      return res.send(`
+        <script>
+          alert("어림도 없지 암");\n\tlocation.href="/board/posts";
+        </script>`);
+    }
+
+    const isExist = await UserModel.checkUserByUserId(userId);
+    if (!isExist) {
+      return res.send(`
+        <script>
+          alert("없거나 잘못된 사용자입니다.");
+          history.back();
+        </script>
+        `);
+    }
+
+    // 댓삭
+    await UserService.deleteCommentsByUserId(userId);
+    // 글삭
+    await UserService.deletePostsByUserId(userId);
+    // 유저삭제
+    await UserModel.deleteUser(userId);
+    // 세션 삭제
+    delete req.session.user;
+
+    // 결과 통보
+    return res.send(`
+      <script>
+        alert("삭제 완료되었습니다.");
+        location.href="/board/posts";
+      </script>
+      `);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw error;
   }
 }
 
@@ -95,14 +129,21 @@ async function signIn(req, res) {
   }
 }
 
-function viewMyPage(req, res) {
+async function viewMyPage(req, res) {
   try {
     if (!req.session.user) {
-      res.render("signin");
+      return res.redirect("/user/signin");
     }
 
-    res.render("mypage", { user: req.session.user });
-  } catch (error) {}
+    const userId = parseInt(req.session.user.id);
+    const getUserDashboard = await UserService.getUserDashboard(userId);
+    const { user, posts } = getUserDashboard;
+
+    // res.json({ user, posts });
+    res.render("mypage", { user, posts });
+  } catch (error) {
+    throw error;
+  }
 }
 
 function logout(req, res) {
