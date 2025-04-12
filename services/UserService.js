@@ -2,10 +2,22 @@
 const UserModel = require("../models/UserModel");
 const BoardService = require("./BoardService");
 
-async function getUserDashboard(userId) {
+async function getUserDashboard(params) {
+  const { userId, startPage, count } = params;
   const user = await UserModel.getUser(userId);
-  const posts = await BoardService.getPostsByUserId(userId);
-  return { user, posts };
+  const posts = await BoardService.getPostsByUserId(params);
+  const totalPostsCount = await BoardService.getPostsCountByUserId(userId);
+  const totalPages = Math.ceil(totalPostsCount / count);
+
+  const result = {
+    user: user,
+    startPage: startPage,
+    count: count,
+    totalPostsCount: totalPostsCount,
+    totalPages: totalPages,
+    posts: posts,
+  };
+  return result;
 }
 
 async function deleteCommentsByUserId(userId) {

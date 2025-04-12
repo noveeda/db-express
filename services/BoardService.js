@@ -1,8 +1,12 @@
 // BoardService.js
 const BoardModel = require("../models/BoardModel");
 
-async function getPostsByUserId(userId) {
-  return await BoardModel.getPostsByUserId(userId);
+async function getPostsByUserId(params) {
+  return await BoardModel.getPostsByUserId(params);
+}
+
+async function getPostsCountByUserId(userId) {
+  return await BoardModel.getPostsCountByUserId(userId);
 }
 
 async function deleteCommentsByUserId(userId) {
@@ -17,4 +21,5 @@ module.exports = {
   getPostsByUserId,
   deleteCommentsByUserId,
   deletePostsByUserId,
+  getPostsCountByUserId,
 };

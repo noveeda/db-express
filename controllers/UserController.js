@@ -135,11 +135,18 @@ async function viewMyPage(req, res) {
     }
 
     const userId = parseInt(req.session.user.id);
-    const getUserDashboard = await UserService.getUserDashboard(userId);
-    const { user, posts } = getUserDashboard;
+    const startPage = parseInt(req.query.startPage) || 1;
+    const count = parseInt(req.query.count) || 10;
+    const params = {
+      userId: userId,
+      startPage: startPage,
+      count: count,
+    };
+
+    const getUserDashboard = await UserService.getUserDashboard(params);
 
     // res.json({ user, posts });
-    res.render("mypage", { user, posts });
+    res.render("mypage", getUserDashboard);
   } catch (error) {
     throw error;
   }

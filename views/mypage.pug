@@ -56,6 +56,28 @@ html(lang="ko")
                 form(action=`/board/post/${post.post_id}/delete`, method="post", onsubmit="return confirm('정말 삭제하시겠습니까?');")
                   button(type="submit").btn-small 삭제
 
+          // 페이징
+          .pagination
+            - var curPage = parseInt(startPage)
+            - var pageGroup = Math.floor((curPage - 1) / 10)
+            - var groupStart = pageGroup * 10 + 1
+            - var groupEnd = Math.min(groupStart + 9, totalPages)
+
+            // ◄ 이전 페이지 그룹
+            if groupStart > 1
+              a.page(href=`?startPage=${groupStart - 1}&count=10`) ◄
+
+            // 페이지 번호들
+            each num in Array(groupEnd - groupStart + 1).fill(0).map((_, idx) => groupStart + idx)
+              a.page(
+                href=`?startPage=${num}&count=10`,
+                class=(num === curPage ? 'active' : '')
+              ) #{num}
+
+            // ► 다음 페이지 그룹
+            if groupEnd < totalPages
+              a.page(href=`?startPage=${groupEnd + 1}&count=10`) ►
+
           .nav_bar
             form(action=`/user/${user.user_id}/delete`, method="post", onsubmit="return confirm('정말 삭제하시겠습니까?');")
               button.nav.sig.delete-account-btn 회원탈퇴

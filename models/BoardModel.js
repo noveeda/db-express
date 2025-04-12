@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const { get } = require("../routes/BoardRoute");
 
 // 페이지네이션 한 포스트 가져오기
 async function getPosts(params) {
@@ -71,6 +72,21 @@ async function getPostsCount() {
 
     const rows = await conn.query(sql);
     return Number(rows[0].count); // BigInt -> Number로 형변환.
+  } catch (error) {
+    throw error;
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
+async function getPostsCountByUserId(userId) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const sql = `SELECT COUNT(*) as count FROM posts WHERE user_id = ?`;
+    const result = await conn.query(sql, [userId]);
+
+    return Number(result[0]["count"]);
   } catch (error) {
     throw error;
   } finally {
@@ -299,23 +315,29 @@ async function deleteComment(commentId) {
   }
 }
 
-async function getPostsByUserId(userId) {
+async function getPostsByUserId(params) {
   let conn;
   try {
+    // params = {
+    //   count: 10, // 페이지당 게시물 수
+    //   startPage: 1, // 시작 페이지
+    //   userId: 1 // 사용자의 ID
+    // }
+    const { count, startPage, userId } = params;
+    const offset = (startPage - 1) * count; // 시작 페이지에 따라 offset 계산
     conn = await pool.getConnection();
     // 번호 제목 조회수 수정 삭제
     const sql = `
     SELECT 
-    post_id,
-    post_title,
-    post_views,
-    post_date
+      post_id,
+      post_title,
+      post_views,
+      post_date
     FROM posts
     WHERE user_id = ?
-    ORDER BY post_id;
-    `;
-    const params = [userId];
-    const result = await conn.query(sql, params);
+    ORDER BY post_id DESC LIMIT ? OFFSET ?`;
+
+    const result = await conn.query(sql, [userId, count, offset]);
 
     return result;
   } catch (error) {
@@ -437,6 +459,7 @@ module.exports = {
   deleteCommentsByUserId, // 사용자의 댓글 전체 삭제
   updateComment, // 댓글 수정
   getCommentUserId, // 특정 댓글의 user_id를 조회
+  getPostsCountByUserId, // 게시물 개수 조회
   getPostsCountByTitle, // 제목으로 게시물 개수 조회
   getPostsCountByNickname, // 작성자로 게시물 개수 조회
 };
