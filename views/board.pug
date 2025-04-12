@@ -17,7 +17,7 @@ block content
       .row.header
         // 헤더
         - const nextOrder = (sortField === 'post_id' && sortOrder === 'asc') ? 'desc' : 'asc'
-        .cell: a(href=`?startPage=${startPage}&sort=post_id&order=${nextOrder}`) 번호
+        .cell: a(href=`?startPage=${startPage}&sort=post_id&order=${nextOrder}&search-type=${searchType}&search-value=${searchValue}`) 번호
           if sortField == 'post_id'  
             if sortOrder == 'asc'
               span ↑
@@ -27,7 +27,7 @@ block content
             span  
 
         - const nextTitleOrder = (sortField === 'post_title' && sortOrder === 'asc') ? 'desc' : 'asc'
-        .cell: a(href=`?startPage=${startPage}&sort=post_title&order=${nextTitleOrder}`) 제목
+        .cell: a(href=`?startPage=${startPage}&sort=post_title&order=${nextTitleOrder}&search-type=${searchType}&search-value=${searchValue}`) 제목
           if sortField == 'post_title'  
             if sortOrder == 'asc'
               span ↑
@@ -37,7 +37,7 @@ block content
             span  
 
         - const nextWriterOrder = (sortField === 'user_nickname' && sortOrder === 'asc') ? 'desc' : 'asc'
-        .cell: a(href=`?startPage=${startPage}&sort=user_nickname&order=${nextWriterOrder}`) 작성자
+        .cell: a(href=`?startPage=${startPage}&sort=user_nickname&order=${nextWriterOrder}&search-type=${searchType}&search-value=${searchValue}`) 작성자
           if sortField == 'user_nickname'  
             if sortOrder == 'asc'
               span ↑
@@ -47,7 +47,7 @@ block content
             span  
 
         - const nextDateOrder = (sortField === 'post_date' && sortOrder === 'asc') ? 'desc' : 'asc'
-        .cell: a(href=`?startPage=${startPage}&sort=post_date&order=${nextDateOrder}`) 작성일
+        .cell: a(href=`?startPage=${startPage}&sort=post_date&order=${nextDateOrder}&search-type=${searchType}&search-value=${searchValue}`) 작성일
           if sortField == 'post_date'  
             if sortOrder == 'asc'
               span ↑
@@ -57,7 +57,7 @@ block content
             span  
 
         - const nextViewsOrder = (sortField === 'post_views' && sortOrder === 'asc') ? 'desc' : 'asc'
-        .cell: a(href=`?startPage=${startPage}&sort=post_views&order=${nextViewsOrder}`) 조회수
+        .cell: a(href=`?startPage=${startPage}&sort=post_views&order=${nextViewsOrder}&search-type=${searchType}&search-value=${searchValue}`) 조회수
           if sortField == 'post_views'  
             if sortOrder == 'asc'
               span ↑
@@ -70,7 +70,7 @@ block content
       each post in posts
         .row
           .cell #{post.post_id}
-          .cell 
+          .cell.title 
             a(href=`post/${post.post_id}`) #{post.post_title}
           .cell #{post.user_nickname}
           .cell #{post.post_date}
@@ -78,36 +78,46 @@ block content
         
     // 검색창
     .search-box
-      form(action="/board/post", method="get") 
-        select
-          option 제목
-          option 작성자
-        input(type="text" placeholder="검색어를 입력하세요.")
-        button 🔍
+      form(action="/board/posts", method="get") 
+        select(id="search-type" name="search-type")
+          option(value="post_title" name="search-type" selected=searchType === "post_title") 제목
+          option(value="user_nickname" name="search-type" selected=searchType === "user_nickname") 작성자
+        input(
+          type="text",
+          placeholder="검색어를 입력하세요.",
+          required, 
+          id="keyword", 
+          name="keyword"
+          value=keyword)
+        button(type="submit") 🔍
+
     // 페이징
     .pagination
       - var curPage = parseInt(startPage)
       - var pageGroup = Math.floor((curPage - 1) / 10)
       - var groupStart = pageGroup * 10 + 1
       - var groupEnd = Math.min(groupStart + 9, totalPages)
+      - var searchType = searchType || 'post_title'
+      - var keyword = keyword || ''
 
       // ◄ 이전 페이지 그룹
       if groupStart > 1
-        a.page(href=`?startPage=${groupStart - 1}&count=10&sort=${sortField}&order=${sortOrder}`) ◄
+        a.page(href=`?startPage=${groupStart - 1}&count=10&sort=${sortField}&order=${sortOrder}&search-type=${searchType}&keyword=${keyword}`) ◄
 
       // 페이지 번호들
       each num in Array(groupEnd - groupStart + 1).fill(0).map((_, idx) => groupStart + idx)
         a.page(
-          href=`?startPage=${num}&count=10&sort=${sortField}&order=${sortOrder}`,
+          href=`?startPage=${num}&count=10&sort=${sortField}&order=${sortOrder}&search-type=${searchType}&keyword=${keyword}`,
           class=(num === curPage ? 'active' : '')
         ) #{num}
 
       // ► 다음 페이지 그룹
       if groupEnd < totalPages
-        a.page(href=`?startPage=${groupEnd + 1}&count=10&sort=${sortField}&order=${sortOrder}`) ►
+        a.page(href=`?startPage=${groupEnd + 1}&count=10&sort=${sortField}&order=${sortOrder}&search-type=${searchType}&keyword=${keyword}`) ►
 
 
     // 글쓰기 버튼
     .write-btn
-      a(href="/board/post/editor") 
-        button 글쓰기 
+      a(href="/board/post/editor" class="write-link") 글쓰기
+      //- a(href="/board/post/editor") 
+      //-   button 글쓰기 

@@ -79,3 +79,7 @@ a:hover {
   justify-content: flex-end; /* 오른쪽 정렬하고 싶으면 */
   align-items: center;
 }
+.title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

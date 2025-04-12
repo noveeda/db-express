@@ -1,5 +1,4 @@
 const UserModel = require("../models/UserModel");
-const { get } = require("../routes/UserRoute");
 const UserService = require("../services/UserService");
 
 // 아이디 중복 확인
@@ -157,6 +156,57 @@ function logout(req, res) {
   } catch (error) {}
 }
 
+async function updateUser(req, res) {
+  try {
+    const userId = parseInt(req.params.userid);
+    var reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi;
+    const nickname = req.body.nickname.replace(reg, "");
+    // 로그인이 안돼있거나 로그인한 사람과 params로 가져온 userId가 맞지 않는 경우 예외처리
+    if (!req.session.user || userId !== req.session.user.id) {
+      return res.send(`
+        <script>
+          alert("어림도 없지 암");\n\tlocation.href="/board/posts";
+        </script>`);
+    }
+
+    // 에러 제어
+    const isExist = await UserModel.checkUserByUserId(userId);
+    if (!isExist) {
+      return res.send(`
+        <script>
+          alert("없거나 잘못된 사용자입니다.");
+          location.href="/board/posts;
+        </script>
+        `);
+    }
+
+    console.log(nickname, userId);
+    // 정보 수정
+    const result = await UserModel.updateUser(nickname, userId);
+    console.log(result);
+
+    if (!result) {
+      return res.send(`
+        <script>
+          alert("수정 실패했습니다. " + ${result});
+          history.back();
+        </script>
+        `);
+    }
+
+    // 결과 통보
+    return res.send(`
+      <script>
+        alert("수정 완료되었습니다.");
+        history.back();
+      </script>
+      `);
+  } catch (error) {
+    throw error;
+    // res.status(400).json({ error: error });
+  }
+}
+
 module.exports = {
   viewSignIn,
   viewSignUp,
@@ -166,4 +216,5 @@ module.exports = {
   deleteUser,
   viewMyPage,
   logout,
+  updateUser,
 };

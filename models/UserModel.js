@@ -1,4 +1,3 @@
-const { compile } = require("pug");
 const pool = require("../config/db");
 
 /**
@@ -12,7 +11,7 @@ async function isExistUsername(userName) {
     conn = await pool.getConnection();
     const sql = "SELECT * FROM users WHERE user_username = ?";
     const rows = await conn.query(sql, [userName]);
-    return rows.length ? true : false;
+    return rows.length > 0 ? true : false;
   } catch (error) {
     throw error;
   } finally {
@@ -138,6 +137,26 @@ async function validUser(username, password) {
   }
 }
 
+async function updateUser(nickname, userId) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const sql = `
+    UPDATE users
+    SET user_nickname = ?
+    WHERE user_id = ?;
+    `;
+
+    const params = [nickname, userId];
+    const result = await conn.query(sql, params);
+
+    return result;
+  } catch {
+  } finally {
+    if (conn) conn.release();
+  }
+}
+
 module.exports = {
   isExistUsername,
   checkUserByUserId,
@@ -145,4 +164,5 @@ module.exports = {
   deleteUser,
   validUser,
   getUser,
+  updateUser,
 };

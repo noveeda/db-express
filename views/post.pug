@@ -36,14 +36,26 @@ block content
     // 댓글
     .comment-section
       .comment-title 댓글
-      .comments
         each comment, index in comments
-          .comment
+          .comment(id=`${comment.comment_id}`)
             .comment-writer #{comment.user_nickname}
-            .comment-text #{comment.comment_content}
+
+            // 텍스트와 textarea 둘 다 넣되, textarea는 기본 숨김
+            span.comment-text!= comment.comment_content
+
+            form.comment-edit-form(
+              action=`/board/comment/${post.post_id}/${comment.comment_id}/edit`, 
+              method="post", 
+              style="display: none;"
+              )
+
+              textarea(name="comment_content")= comment.comment_content.replace(/<br\s*\/?>/gi, '\n')
+
             if isCommentAuthor[index]
-              form(action=`/board/comment/${post.post_id}/${comment.comment_id}/delete`, method="post") 
+              button.com-edit-btn(onclick=`toggleEditMode(${comment.comment_id})`) 수정
+              form(action=`/board/comment/${post.post_id}/${comment.comment_id}/delete`, method="post")
                 button.com-delete-btn(type="submit") 삭제
+
     
       // 댓글 입력
       .comment-input

@@ -1,34 +1,68 @@
-const { Model } = require("sequelize");
 const BoardModel = require("../models/BoardModel");
-const { post } = require("../routes/BoardRoute");
-const alertAndBack = require("../utils/AlertAndBack");
+const { param } = require("../routes/BoardRoute");
 
 async function getPosts(req, res) {
   try {
+    // 시작 페이지
     const startPage = parseInt(req.query.startPage) || 1;
+    // 페이지 당 게시물 수
     const count = parseInt(req.query.count) || 10;
-    const sortField = req.query.sort || "post_id";
-    const sortOrder = req.query.order || "desc";
 
-    const totalPostsCount = await BoardModel.getPostsCount();
-    const totalPages = Math.ceil(totalPostsCount / count);
-    const posts = await BoardModel.getPosts(
-      startPage,
-      count,
-      sortField,
-      sortOrder
-    );
-    const isLogined = req.session.user ? true : false;
+    const allowedSortFields = [
+      "post_id",
+      "post_title",
+      "post_date",
+      "post_views",
+      "user_nickname",
+    ];
 
-    result = {
-      startPage,
-      count,
-      totalPages,
-      posts: posts,
+    const allowedSortOrders = ["asc", "desc", "ASC", "DESC"];
+
+    // 정렬 필드
+    // 정렬 필드가 없으면 post_id로 설정
+    const sortField = allowedSortFields.includes(req.query.sort)
+      ? req.query.sort
+      : "post_id";
+
+    // 정렬 순서(기본값은 내림차순)
+    const sortOrder = allowedSortFields.includes(req.query.order)
+      ? req.query.order
+      : "DESC";
+
+    const allowedSearchTypes = ["post_title", "user_nickname"];
+    // 검색 기준(기본값은 post_title)
+    const searchType = allowedSearchTypes.includes(req.query["search-type"])
+      ? req.query["search-type"]
+      : "";
+    // 검색어
+    const keyword = req.query["keyword"] || "";
+
+    // 생각해보니까 length로 구하면 O(1)인데 왜 이렇게 했지?
+    const params = {
+      startPage: startPage,
+      count: count,
       sortField: sortField,
       sortOrder: sortOrder,
-      isLogined: isLogined,
+      searchType: searchType,
+      keyword: keyword,
     };
+
+    console.log(params);
+    // 게시물 가져오기
+    const result = await BoardModel.getPosts(params);
+
+    let totalPostsCount;
+    if (searchType === "user_nickname" && keyword !== "")
+      totalPostsCount = await BoardModel.getPostsCountByNickname(keyword);
+    else if (searchType === "post_title" && keyword !== "")
+      totalPostsCount = await BoardModel.getPostsCountByTitle(keyword);
+    else totalPostsCount = await BoardModel.getPostsCount();
+
+    const totalPages = Math.ceil(totalPostsCount / count);
+    const isLogined = req.session.user ? true : false;
+
+    result["totalPages"] = totalPages;
+    result["isLogined"] = isLogined;
     res.render("board", result);
     // res.json(result);
   } catch (error) {
@@ -39,10 +73,13 @@ async function getPosts(req, res) {
 async function getPostByID(req, res) {
   try {
     const id = parseInt(req.params.id);
+    const flag = req.query.flag == "1" ? true : false;
 
     // 동기 호출로 데이터 보장성 향상.
     // 조회수 증가
-    await BoardModel.increasePostViews(id);
+    if (!flag) {
+      await BoardModel.increasePostViews(id);
+    }
     // 게시글 가져오기
     const post = await BoardModel.fetchPostByID(id);
     // 댓글 가져오기
@@ -150,7 +187,7 @@ async function deletePost(req, res) {
         .send(`<script>alert("${message}"); history.back();</script>`);
     }
 
-    // 삭제
+    // 게시물 삭제
     await BoardModel.deletePost(postId);
 
     res.redirect("/board/posts"); // 게시글 목록으로 이동
@@ -170,7 +207,7 @@ async function addComment(req, res) {
       );
     }
 
-    const postId = parseInt(req.params.postId);
+    const postId = parseInt(req.params.postid);
     const { comment } = req.body;
     const userId = req.session.user.id;
 
@@ -185,7 +222,7 @@ async function addComment(req, res) {
 
     const result = await BoardModel.insertComment(postId, userId, comment);
 
-    return res.redirect(`/board/post/${postId}`);
+    return res.redirect(`/board/post/${postId}?flag=1`); // 게시글 목록으로 이동
   } catch (error) {
     throw error;
   }
@@ -193,8 +230,8 @@ async function addComment(req, res) {
 
 async function deleteComment(req, res) {
   try {
-    const commentId = parseInt(req.params.commentId);
-    const postId = parseInt(req.params.postId);
+    const commentId = parseInt(req.params.commentid);
+    const postId = parseInt(req.params.postid);
     const userId = req.session.user?.id;
 
     if (!userId) {
@@ -208,7 +245,7 @@ async function deleteComment(req, res) {
     // 본인 댓글인지 확인
     const comment = await BoardModel.fetchCommentByID(commentId, userId);
 
-    if (!comment || comment.user_id !== userId) {
+    if (!comment || comment["user_id"] !== userId) {
       message = "삭제 권한이 없습니다.";
       return res.send(`
           <script>
@@ -220,7 +257,7 @@ async function deleteComment(req, res) {
     // 삭제
     await BoardModel.deleteComment(commentId);
 
-    return res.redirect(`/board/post/${postId}`); // 게시글 목록으로 이동
+    return res.redirect(`/board/post/${postId}?flag=1`); // 게시글 목록으로 이동
   } catch (error) {
     throw error;
   }
@@ -232,14 +269,78 @@ async function getPostsByOption(req, res) {
   console.table(req.query);
 }
 
+async function updateComment(req, res) {
+  try {
+    const postId = parseInt(req.params.postid);
+    const commentId = parseInt(req.params.commentid);
+    const commentContent = req.body.comment_content.replace(/\r?\n/g, "<br>");
+
+    // 로그인 확인
+    if (!req.session.user) {
+      return res.send(`
+          <script>
+            alert("로그인 후 사용하십시오.");
+            location.href="/user/signin";
+          </script>
+        `);
+    }
+
+    // 잘못된 접근 차단
+    if (typeof postId !== "number" || typeof commentId !== "number") {
+      return res.send(`
+          <script>
+            alert("올바르지 않은 게시글 번호 또는 댓글 번호입니다.");
+            location.href="/board/posts";
+          </script>
+        `);
+    }
+
+    // 댓글의 작성자가 맞는지 확인
+    const commentUserId = await BoardModel.getCommentUserId(commentId);
+
+    if (req.session.user.id !== commentUserId) {
+      return res.send(`
+          <script>
+            alert("댓글의 작성자가 아닙니다.");
+            history.back();
+          </script>
+        `);
+    }
+
+    const affectedRows = await BoardModel.updateComment(
+      commentContent,
+      commentId
+    );
+
+    if (affectedRows == 0) {
+      return res.send(`
+          <script>
+            alert("없는 댓글입니다.");
+            history.back();
+          </script>
+        `);
+    }
+
+    return res.send(`
+        <script>
+          alert("수정 성공");
+          location.href="/board/post/${postId}?flag=1";
+        </script>
+      `);
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
-  getPosts,
-  getPostByID,
-  showPostEditor,
-  submitPost,
-  updatePost,
-  deletePost,
-  addComment,
-  deleteComment,
-  getPostsByOption,
+  getPosts, // 전체 게시물 조회
+  getPostByID, // 특정 게시물 조회
+  showPostEditor, // 게시글 작성 폼
+  submitPost, // 게시글 작성
+  updatePost, // 게시글 수정
+  deletePost, // 게시글 삭제
+  addComment, // 댓글 작성
+  deleteComment, // 댓글 삭제
+  getPostsByOption, // 제목이나 작성자로 게시글 조회
+  updateComment, // 댓글 수정
 };

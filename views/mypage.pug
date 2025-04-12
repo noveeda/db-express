@@ -16,22 +16,24 @@ html(lang="ko")
         .info
           .row
             span.label 이름
-            span.value= user.user_nickname
+            span.value
+              form(action=`/user/${user.user_id}/update`, method="post") 
+                // 변경 누르면 나오는 input창
+                input.input-field(
+                  type="text", 
+                  value=user.user_nickname,
+                  name="nickname",
+                  placeholder="닉네임을 입력해주세요."
+                  required)
+                
+                button(type="submit").btn-small 변경
+            //- span.value= user.user_nickname
           .row
             span.label 아이디
             span.value= user.user_username
           .row
             span.label 비밀번호
-            span.value
-              //| 에빈밍
-              // 변경 누르면 나오는 input창
-              input.input-field(
-                type="text", 
-                value=user.user_password,
-                placeholder="비밀번호를 입력해주세요."
-                required)
-                
-              button.btn-small 변경
+            span.value= user.user_password
       
       .container_post
         h2 내가 쓴 게시글

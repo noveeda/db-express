@@ -38,6 +38,10 @@ app.listen(port, function () {
   console.log(`Server running on http://localhost:${port}`);
 });
 
+// ❗️ favicon.ico 요청에 대한 응답 처리
+// 브라우저가 favicon.ico를 요청할 때 204 No Content 응답을 보내는 미들웨어
+app.get("/favicon.ico", (req, res) => res.status(204).end());
+
 // ❗️맨 마지막에 정의되지 않은 모든 경로 처리
 app.use((req, res, next) => {
   res.redirect("/board/posts");

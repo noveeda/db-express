@@ -75,6 +75,7 @@ body {
   text-align: left;
   margin-top: 10px;
   margin-left: 0px;
+  width: 100%;
 }
 
 .comment-input input {
@@ -101,7 +102,8 @@ body {
 
 .list-btn,
 .board-delete-btn,
-.com-delete-btn {
+.com-delete-btn,
+.com-edit-btn {
   padding: 5px 10px;
   margin: 5px;
 }
@@ -113,4 +115,21 @@ a {
 
 a:hover {
   color: gray;
+}
+
+.hidden {
+  display: none;
+}
+
+.comment-writer {
+  font-size: 16px;
+}
+
+.comment-text {
+  font-size: 16px;
+}
+
+.comment-edit-form textarea {
+  width: 900px;
+  height: auto;
 }
