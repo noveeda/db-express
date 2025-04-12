@@ -17,7 +17,7 @@ block content
       .row.header
         // 헤더
         - const nextOrder = (sortField === 'post_id' && sortOrder === 'asc') ? 'desc' : 'asc'
-        .cell: a(href=`?startPage=${startPage}&sort=post_id&order=${nextOrder}&search-type=${searchType}&search-value=${searchValue}`) 번호
+        .cell: a(href=`?startPage=${startPage}&sort=post_id&order=${nextOrder}&search-type=${searchType}&keyword=${keyword}`) 번호
           if sortField == 'post_id'  
             if sortOrder == 'asc'
               span ↑
@@ -27,7 +27,7 @@ block content
             span  
 
         - const nextTitleOrder = (sortField === 'post_title' && sortOrder === 'asc') ? 'desc' : 'asc'
-        .cell: a(href=`?startPage=${startPage}&sort=post_title&order=${nextTitleOrder}&search-type=${searchType}&search-value=${searchValue}`) 제목
+        .cell: a(href=`?startPage=${startPage}&sort=post_title&order=${nextTitleOrder}&search-type=${searchType}&keyword=${keyword}`) 제목
           if sortField == 'post_title'  
             if sortOrder == 'asc'
               span ↑
@@ -37,7 +37,7 @@ block content
             span  
 
         - const nextWriterOrder = (sortField === 'user_nickname' && sortOrder === 'asc') ? 'desc' : 'asc'
-        .cell: a(href=`?startPage=${startPage}&sort=user_nickname&order=${nextWriterOrder}&search-type=${searchType}&search-value=${searchValue}`) 작성자
+        .cell: a(href=`?startPage=${startPage}&sort=user_nickname&order=${nextWriterOrder}&search-type=${searchType}&keyword=${keyword}`) 작성자
           if sortField == 'user_nickname'  
             if sortOrder == 'asc'
               span ↑
@@ -47,7 +47,7 @@ block content
             span  
 
         - const nextDateOrder = (sortField === 'post_date' && sortOrder === 'asc') ? 'desc' : 'asc'
-        .cell: a(href=`?startPage=${startPage}&sort=post_date&order=${nextDateOrder}&search-type=${searchType}&search-value=${searchValue}`) 작성일
+        .cell: a(href=`?startPage=${startPage}&sort=post_date&order=${nextDateOrder}&search-type=${searchType}&keyword=${keyword}`) 작성일
           if sortField == 'post_date'  
             if sortOrder == 'asc'
               span ↑
@@ -57,7 +57,7 @@ block content
             span  
 
         - const nextViewsOrder = (sortField === 'post_views' && sortOrder === 'asc') ? 'desc' : 'asc'
-        .cell: a(href=`?startPage=${startPage}&sort=post_views&order=${nextViewsOrder}&search-type=${searchType}&search-value=${searchValue}`) 조회수
+        .cell: a(href=`?startPage=${startPage}&sort=post_views&order=${nextViewsOrder}&search-type=${searchType}&keyword=${keyword}`) 조회수
           if sortField == 'post_views'  
             if sortOrder == 'asc'
               span ↑
@@ -81,7 +81,7 @@ block content
       form(action="/board/posts", method="get") 
         select(id="search-type" name="search-type")
           option(value="post_title" name="search-type" selected=searchType === "post_title") 제목
-          option(value="user_nickname" name="search-type" selected=searchType === "user_nickname") 작성자
+          option(value="user_nickname" name="search-type" selected=keyword === "user_nickname") 작성자
         input(
           type="text",
           placeholder="검색어를 입력하세요.",

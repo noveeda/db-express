@@ -7,7 +7,7 @@ html(lang="ko")
     link(rel="stylesheet", href="/stylesheets/writepost.css")
   body
     .container
-      h1 자유 게시판
+      h1: a(href="/board/posts") 자유 게시판
       
       if error
         script.
@@ -25,14 +25,16 @@ html(lang="ko")
                 name="title",
                 placeholder="제목을 입력해주세요.",
                 value=post ? post.post_title : '',
-                required)
+                required=true
+                autofocus=true)
 
         // 게시글 내용
         .post-content
           textarea.input-content(
             name="content",
             placeholder="게시글 내용을 입력해주세요.",
-            required)= post ? post.post_content.replace(/<br\s*\/?>/gi, '\n') : ''
+            required
+            )= post ? post.post_content.replace(/<br\s*\/?>/gi, '\n') : ''
 
         // 하단 버튼
         .bottom-buttons
