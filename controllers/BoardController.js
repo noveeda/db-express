@@ -16,7 +16,7 @@ async function getPosts(req, res) {
       "user_nickname",
     ];
 
-    const allowedSortOrders = ["asc", "desc", "ASC", "DESC"];
+    const allowedSortOrders = ["asc", "desc"];
 
     // 정렬 필드
     // 정렬 필드가 없으면 post_id로 설정
@@ -25,7 +25,7 @@ async function getPosts(req, res) {
       : "post_id";
 
     // 정렬 순서(기본값은 내림차순)
-    const sortOrder = allowedSortFields.includes(req.query.order)
+    const sortOrder = allowedSortOrders.includes(req.query.order)
       ? req.query.order
       : "DESC";
 
@@ -47,7 +47,6 @@ async function getPosts(req, res) {
       keyword: keyword,
     };
 
-    console.log(params);
     // 게시물 가져오기
     const result = await BoardModel.getPosts(params);
 
@@ -63,6 +62,7 @@ async function getPosts(req, res) {
 
     result["totalPages"] = totalPages;
     result["isLogined"] = isLogined;
+    // console.log(result);
     res.render("board", result);
     // res.json(result);
   } catch (error) {

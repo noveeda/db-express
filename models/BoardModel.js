@@ -46,8 +46,8 @@ async function getPosts(params) {
     const result = {
       startPage: startPage,
       count: count,
-      sortField: sortField,
-      sortOrder: sortOrder,
+      sortField: sortField.toLowerCase(),
+      sortOrder: sortOrder.toLowerCase(),
       searchType: searchType,
       keyword: keyword,
       posts: posts,
